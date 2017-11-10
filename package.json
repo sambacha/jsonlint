@@ -8,14 +8,17 @@
     "lint",
     "jsonlint"
   ],
-  "version": "1.8.1",
+  "contributors": [
+    "Paul Vollmer <mail@paulvollmer.net> (http://paulvollmer.net)"
+  ],
+  "version": "1.8.2",
   "preferGlobal": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/zaach/jsonlint.git"
+    "url": "git://github.com/paulvollmer/jsonlint.git"
   },
   "bugs": {
-    "url": "http://github.com/zaach/jsonlint/issues"
+    "url": "http://github.com/paulvollmer/jsonlint/issues"
   },
   "main": "lib/jsonlint.js",
   "bin": {
