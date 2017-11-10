@@ -6,7 +6,7 @@ A pure [JavaScript version](http://zaach.github.com/jsonlint/) of the service pr
 ## Command line interface
 Install jsonlint with npm to use the command line interface:
 
-    npm install jsonlint -g
+    npm install paulvollmer/jsonlint -g
 
 Validate a file like so:
 
@@ -15,6 +15,10 @@ Validate a file like so:
 or pipe input into stdin:
 
     cat myfile.json | jsonlint
+
+you can also lint all `.json` files in a directory:
+
+    jsonlint mydir
 
 jsonlint will either report a syntax error with details or pretty print the source if it is valid.
 
