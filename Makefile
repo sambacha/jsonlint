@@ -15,4 +15,9 @@ deploy: site
 test: lib/jsonlint.js test/all-tests.js
 	node test/all-tests.js
 
+test-cli:
+	node ./lib/cli.js -h
+	node ./lib/cli.js --version
+	node ./lib/cli.js -q package.json test/recursive
+
 .PHONY: build site deploy test
