@@ -19,3 +19,4 @@ notifications:
 script:
   - make build
   - make test
+  - make test-cli
