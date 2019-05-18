@@ -1,20 +1,21 @@
 {
+  "name": "@prantlf/jsonlint",
+  "version": "1.6.4",
+  "description": "Validate JSON - checks syntax of JSON files.",
   "author": "Zach Carter <zach@carter.name> (http://zaa.ch)",
   "contributors": [
     "Ferdinand Prantl <prantlf@gmail.com> (http://prantl.tk)",
     "Greg Inman <ginman@itriagehealth.com>",
     "Paul Vollmer <mail@paulvollmer.net> (http://paulvollmer.net)"
   ],
-  "name": "@prantlf/jsonlint",
-  "description": "Validate JSON - checks syntax of JSON files.",
-  "keywords": [
-    "json",
-    "validation",
-    "lint",
-    "jsonlint"
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/prantlf/jsonlint/blob/master/LICENSE"
+    }
   ],
-  "version": "1.6.4",
-  "preferGlobal": true,
+  "homepage": "http://prantlf.github.com/jsonlint/",
   "repository": {
     "type": "git",
     "url": "git://github.com/prantlf/jsonlint.git"
@@ -22,22 +23,13 @@
   "bugs": {
     "url": "http://github.com/prantlf/jsonlint/issues"
   },
+  "preferGlobal": true,
   "main": "lib/jsonlint.js",
   "bin": {
     "jsonlint": "lib/cli.js"
   },
   "engines": {
     "node": ">= 0.6"
-  },
-  "dependencies": {
-    "nomnom": "1.8.1",
-    "JSV": "4.0.2"
-  },
-  "devDependencies": {
-    "jison": "0.4.18",
-    "nyc": "14.1.1",
-    "test": "0.6.0",
-    "uglify-js": "3.5.13"
   },
   "scripts": {
     "prepare": "jison -o lib/jsonlint.js src/jsonlint.y src/jsonlint.l && node scripts/bundle.js | uglifyjs > web/jsonlint.js",
@@ -47,6 +39,20 @@
     "site": "cp web/jsonlint.js ../jsonlint-pages/jsonlint.js",
     "deploy": "cd ../jsonlint-pages && git commit -a -m 'Deploy site updates' && git push origin gh-pages"
   },
-  "homepage": "http://zaach.github.com/jsonlint/",
-  "optionalDependencies": {}
+  "keywords": [
+    "json",
+    "validation",
+    "lint",
+    "jsonlint"
+  ],
+  "dependencies": {
+    "nomnom": "1.8.1",
+    "JSV": "4.0.2"
+  },
+  "devDependencies": {
+    "jison": "0.4.18",
+    "nyc": "14.1.1",
+    "test": "0.6.0",
+    "uglify-js": "3.5.13"
+  }
 }
