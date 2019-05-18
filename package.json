@@ -34,7 +34,10 @@
     "uglify-js": "3.5.13"
   },
   "scripts": {
-    "test": "node test/all-tests.js"
+    "build": "jison -o lib/jsonlint.js src/jsonlint.y src/jsonlint.l && node scripts/bundle.js | uglifyjs > web/jsonlint.js",
+    "test": "node test/all-tests.js",
+    "site": "cp web/jsonlint.js ../jsonlint-pages/jsonlint.js",
+    "deploy": "cd ../jsonlint-pages && git commit -a -m 'Deploy site updates' && git push origin gh-pages"
   },
   "homepage": "http://zaach.github.com/jsonlint/",
   "optionalDependencies": {}
