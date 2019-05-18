@@ -9,7 +9,11 @@
       window.onload = function () {
         document.getElementById("button").onclick = function () {
           try {
-            var result = jsonlint.parse(document.getElementById("source").value);
+            var parser = jsonlint
+            if (document.getElementById("comments").checked) {
+              parser = new jsonlint.parser.ParserWithComments
+            }
+            var result = parser.parse(document.getElementById("source").value);
             if (result) {
               document.getElementById("result").innerHTML = "JSON is valid!";
               document.getElementById("result").className = "pass";
@@ -45,15 +49,19 @@
 <body> 
   <h1>JSON Lint</h1> 
   <p>A pure JavaScript version of the service provided at <a href="http://jsonlint.com/">jsonlint.com</a>.</p>
-  <textarea id="source" rows="20" cols="50">
-
-  </textarea>
+  <textarea id="source" rows="20" cols="50"></textarea>
+  <p>
+    <input type="checkbox" checked id="reformat">
+    <label for="reformat">reformat JSON</label>
+    <br>
+    <input type="checkbox" id="comments">
+    <label for="comments">ignore JavaScript-style comments</label>
+  </p>
   <p>
     <button id="button">Validate</button>
-    <input type="checkbox" value="yes" id="reformat" /><label for="reformat">reformat JSON</label>
   </p>
   <h2>Results</h2>
   <pre id="result"></pre>
-  <p><a href="http://github.com/zaach/jsonlint">project on github</a></p> 
+  <p><a href="http://github.com/prantlf/jsonlint">project on github</a></p> 
 </body> 
 </html> 
