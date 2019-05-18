@@ -1,12 +1,13 @@
 {
   "name": "@prantlf/jsonlint",
-  "version": "1.6.4",
+  "version": "0.0.0-development",
   "description": "Validate JSON - checks syntax of JSON files.",
-  "author": "Zach Carter <zach@carter.name> (http://zaa.ch)",
+  "author": "Ferdinand Prantl <prantlf@gmail.com> (http://prantl.tk)",
   "contributors": [
     "Ferdinand Prantl <prantlf@gmail.com> (http://prantl.tk)",
     "Greg Inman <ginman@itriagehealth.com>",
-    "Paul Vollmer <mail@paulvollmer.net> (http://paulvollmer.net)"
+    "Paul Vollmer <mail@paulvollmer.net> (http://paulvollmer.net)",
+    "Zach Carter <zach@carter.name> (http://zaa.ch)"
   ],
   "license": "MIT",
   "licenses": [
@@ -18,7 +19,7 @@
   "homepage": "http://prantlf.github.com/jsonlint/",
   "repository": {
     "type": "git",
-    "url": "git://github.com/prantlf/jsonlint.git"
+    "url": "https://github.com/prantlf/jsonlint.git"
   },
   "bugs": {
     "url": "http://github.com/prantlf/jsonlint/issues"
