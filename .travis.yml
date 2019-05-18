@@ -10,8 +10,8 @@ node_js:
   - '8'
   - '6'
   - '4'
-scripts:
-  - npm run build
+script:
+  - npm run prepare
   - npm test
 after_success:
   - npm run coverage
