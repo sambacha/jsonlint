@@ -1,7 +1,6 @@
 # JSON Lint
 
 [![NPM version](https://badge.fury.io/js/%40prantlf%2Fjsonlint.svg)](https://badge.fury.io/js/%40prantlf%2Fjsonlint)
-lint)
 [![Dependency Status](https://david-dm.org/prantlf/jsonlint.svg)](https://david-dm.org/prantlf/jsonlint)
 [![devDependency Status](https://david-dm.org/prantlf/jsonlint/dev-status.svg)](https://david-dm.org/prantlf/jsonlint#info=devDependencies)
 
@@ -57,9 +56,11 @@ or process all `.json` files in a directory:
 
 I'm not sure why you wouldn't use the built in `JSON.parse` but you can use jsonlint from a CommonJS module:
 
-    var jsonlint = require("jsonlint");
+```js
+var jsonlint = require("jsonlint");
 
-    jsonlint.parse('{"creative?": false}');
+jsonlint.parse('{"creative?": false}');
+```
 
 It returns the parsed object or throws an `Error`.
 
@@ -70,7 +71,6 @@ It returns the parsed object or throws an `Error`.
 
 ## License
 
-Copyright (C) 2012-2019 Zachary Carter
-Copyright (c) 2019 Ferdinand Prantl
+Copyright (C) 2012-2019 Zachary Carter, Ferdinand Prantl
 
 Licensed under the MIT license.
