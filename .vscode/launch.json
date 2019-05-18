@@ -7,7 +7,11 @@
       "name": "bin",
       "program": "${workspaceRoot}/lib/cli.js",
       "args": [
-        "-h"
+        "-C",
+        "package.json"
+      ],
+      "skipFiles": [
+        "<node_internals>/**/*.js"
       ]
     },
     {
