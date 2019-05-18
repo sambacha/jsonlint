@@ -5,6 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/prantlf/jsonlint/badge.svg?branch=master)](https://coveralls.io/github/prantlf/jsonlint?branch=master)
 [![Dependency Status](https://david-dm.org/prantlf/jsonlint.svg)](https://david-dm.org/prantlf/jsonlint)
 [![devDependency Status](https://david-dm.org/prantlf/jsonlint/dev-status.svg)](https://david-dm.org/prantlf/jsonlint#info=devDependencies)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 A pure [JavaScript version](http://prantlf.github.com/jsonlint/) of the service provided at [jsonlint.com](http://jsonlint.com).
 
