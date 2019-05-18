@@ -7,5 +7,6 @@
   "search.exclude": {
     "**/coverage": true,
     "**/node_modules": true
-  }
+  },
+  "eslint.enable": true
 }

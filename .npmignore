@@ -1,9 +1,14 @@
+.coveralls.yml
 .editorconfig
+.eslintignore
+.eslintrc.yml
 .gitignore
 .npmignore
 .nyc_output
 .nycrc.yml
+.travis.yml
 benchmarks
 coverage
 scripts
+src
 test
