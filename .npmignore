@@ -3,6 +3,7 @@
 .npmignore
 .nyc_output
 .nycrc.yml
+benchmarks
 coverage
 scripts
 test

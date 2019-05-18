@@ -10,9 +10,10 @@ A pure [JavaScript version](http://prantlf.github.com/jsonlint/) of the service 
 
 This is a fork of the original package with the following extensions:
 
-* Handles multiple files on the command line (Greg Inman)
-* Walks directories recursively (Paul Vollmer)
-* Depends on up-to-date npm modules without installation warnings
+* Handles multiple files on the command line (Greg Inman).
+* Walks directories recursively (Paul Vollmer).
+* Can parse and skip JavaScript-style comments.
+* Depends on up-to-date npm modules without installation warnings.
 
 ## Command-line Interface
 
@@ -49,6 +50,7 @@ or process all `.json` files in a directory:
        -i, --in-place            overwrite the file
        -t CHAR, --indent CHAR    character(s) to use for indentation  [  ]
        -c, --compact             compact error display
+       -C, --comments            recognize and ignore JavaScript-style comments
        -V, --validate            a JSON schema to use for validation
        -e, --environment         which specification of JSON Schema the validation file uses  [json-schema-draft-03]
        -q, --quiet               do not print the parsed json to STDOUT  [false]
@@ -57,15 +59,27 @@ or process all `.json` files in a directory:
 
 ## Module Interface
 
-I'm not sure why you wouldn't use the built in `JSON.parse` but you can use jsonlint from a CommonJS module:
+You might prefer methods this module to the built-in `JSON.parse` method because of a better error reporting or support for JavaScript-like comments:
 
 ```js
 var jsonlint = require('jsonlint');
-
-jsonlint.parse('{"creative?": false}');
+// Fails at the position of the character "?".
+jsonlint.parse('{"creative?": false}'); // fails
+// Succeeds returning the parsed JSON object.
+jsonlint.parseWithComments('{"creative": false /* for creativity */}');
 ```
 
-It returns the parsed object or throws an `Error`.
+Parsing methods return the parsed object or throw an `Error`.
+
+### Performance
+
+These are the results of parsing a 2.2 KB formatted string (package.json) with Node.js 10.15.3:
+
+    the built-in parser x 112,338 ops/sec ±1.09% (89 runs sampled)
+    the custom parser x 3,520 ops/sec ±1.42% (88 runs sampled)
+    the parser with comment recognition x 3,406 ops/sec ±1.18% (87 runs sampled)
+
+The custom pure-JavaScript parser is a lot slower than the built-in one. However, it is more important to have a clear error reporting than the highest speed in scenarios like parsing configuration files.
 
 ## Vim Plugins
 

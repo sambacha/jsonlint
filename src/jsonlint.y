@@ -2,8 +2,8 @@
 
 /*
   ECMA-262 5th Edition, 15.12.1 The JSON Grammar.
+  Extended to optionally accept ECMAScript comments.
 */
-
 
 %%
 
@@ -84,3 +84,13 @@ JSONElementList
         {$$ = $1; $1.push($3);}
     ;
 
+%%
+
+function ParserWithComments () {
+  this.yy = { ignoreComments: true };
+}
+ParserWithComments.prototype = parser;
+parser.ParserWithComments = ParserWithComments;
+parser.parseWithComments = function (input) {
+  return new ParserWithComments().parse(input);
+}

@@ -34,9 +34,10 @@
   },
   "scripts": {
     "prepare": "jison -o lib/jsonlint.js src/jsonlint.y src/jsonlint.l && node scripts/bundle.js | uglifyjs > web/jsonlint.js",
+    "benchmarks": "jison -o benchmarks/jsonlint-pure.js benchmarks/jsonlint-pure.y benchmarks/jsonlint-pure.l && node benchmarks/parse.js",
     "test": "npm run test:module && npm run test:cli",
     "test:module": "node test/all-tests",
-    "test:cli": "nyc --silent node lib/cli package.json test/recursive && nyc --silent --no-clean node lib/cli -s -V test/passes/3.schema.json test/passes/3.json && nyc --silent --no-clean node lib/cli -v && nyc --silent --no-clean node lib/cli -h && nyc --silent --no-clean node lib/cli -pc test/fails/10.json || nyc report",
+    "test:cli": "nyc --silent node lib/cli package.json test/recursive && nyc --silent --no-clean node lib/cli -s -V test/passes/3.schema.json test/passes/3.json && nyc --silent --no-clean node lib/cli -C test/passes/comments.txt && nyc --silent --no-clean node lib/cli -v && nyc --silent --no-clean node lib/cli -h && nyc --silent --no-clean node lib/cli -pc test/fails/10.json || nyc report",
     "coverage": "cat coverage/lcov.info | npx coveralls",
     "site": "cp web/jsonlint.js ../jsonlint-pages/jsonlint.js",
     "deploy": "cd ../jsonlint-pages && git commit -a -m 'Deploy site updates' && git push origin gh-pages"
@@ -52,6 +53,7 @@
     "JSV": "4.0.2"
   },
   "devDependencies": {
+    "benchmark": "2.1.4",
     "jison": "0.4.18",
     "nyc": "14.1.1",
     "test": "0.6.0",
