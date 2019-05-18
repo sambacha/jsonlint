@@ -1,5 +1,7 @@
 .editorconfig
 .gitignore
 .npmignore
+.nyc_output
+coverage
 scripts
 test

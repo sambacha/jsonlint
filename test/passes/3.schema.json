@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-03/hyper-schema#",
+  "type": "object",
+  "title": "Schema for 3.json",
+  "properties": {
+    "JSON Test Pattern pass3": {
+      "type": "object",
+      "title": "Test Pattern Number 3",
+      "required": true,
+      "properties": {
+        "The outermost value": {
+          "type": "string",
+          "title": "Required property",
+          "required": true
+        },
+        "In this test": {
+          "type": "string",
+          "title": "Optional property"
+        }
+      }
+    }
+  }
+}
