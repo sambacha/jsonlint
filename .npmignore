@@ -2,6 +2,7 @@
 .gitignore
 .npmignore
 .nyc_output
+.nycrc.yml
 coverage
 scripts
 test
