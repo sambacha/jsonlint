@@ -40,7 +40,7 @@
     "uglify-js": "3.5.13"
   },
   "scripts": {
-    "build": "jison -o lib/jsonlint.js src/jsonlint.y src/jsonlint.l && node scripts/bundle.js | uglifyjs > web/jsonlint.js",
+    "prepare": "jison -o lib/jsonlint.js src/jsonlint.y src/jsonlint.l && node scripts/bundle.js | uglifyjs > web/jsonlint.js",
     "test": "npm run test:module && npm run test:cli",
     "test:module": "node test/all-tests",
     "test:cli": "nyc --silent node lib/cli package.json test/recursive && nyc --silent --no-clean node lib/cli -s -V test/passes/3.schema.json test/passes/3.json && nyc --silent --no-clean node lib/cli -v && nyc --silent --no-clean node lib/cli -h && nyc --silent --no-clean node lib/cli -pc test/fails/10.json || nyc report",
