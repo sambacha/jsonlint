@@ -7,6 +7,7 @@
 .nyc_output
 .nycrc.yml
 .travis.yml
+.vscode
 benchmarks
 coverage
 scripts
