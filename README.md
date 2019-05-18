@@ -41,15 +41,16 @@ or process all `.json` files in a directory:
     file     files or directories to parse; otherwise uses stdin
 
     Options:
-       -v, --version            print version and exit
-       -s, --sort-keys          sort object keys
-       -i, --in-place           overwrite the file
-       -t CHAR, --indent CHAR   character(s) to use for indentation  [  ]
-       -c, --compact            compact error display
-       -V, --validate           a JSON schema to use for validation
-       -e, --environment        which specification of JSON Schema the validation file uses  [json-schema-draft-03]
-       -q, --quiet              do not print the parsed json to STDOUT  [false]
-       -p, --pretty-print       force pretty printing even if invalid
+       -v, --version             print version and exit
+       -s, --sort-keys           sort object keys
+       -E ext, --extension ext   file extensions to process for directory walk  [json,JSON]
+       -i, --in-place            overwrite the file
+       -t CHAR, --indent CHAR    character(s) to use for indentation  [  ]
+       -c, --compact             compact error display
+       -V, --validate            a JSON schema to use for validation
+       -e, --environment         which specification of JSON Schema the validation file uses  [json-schema-draft-03]
+       -q, --quiet               do not print the parsed json to STDOUT  [false]
+       -p, --pretty-print        force pretty printing even if invalid
 
 
 ## Module Interface
@@ -57,7 +58,7 @@ or process all `.json` files in a directory:
 I'm not sure why you wouldn't use the built in `JSON.parse` but you can use jsonlint from a CommonJS module:
 
 ```js
-var jsonlint = require("jsonlint");
+var jsonlint = require('jsonlint');
 
 jsonlint.parse('{"creative?": false}');
 ```
