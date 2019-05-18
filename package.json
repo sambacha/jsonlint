@@ -34,7 +34,7 @@
   },
   "scripts": {
     "prepare": "npm run lint && npm run build",
-    "lint": "standard --fix",
+    "lint": "standard --fix -v",
     "build": "jison -o lib/jsonlint.js src/jsonlint.y src/jsonlint.l && node scripts/bundle.js | uglifyjs > web/jsonlint.js",
     "benchmarks": "jison -o benchmarks/jsonlint-pure.js benchmarks/jsonlint-pure.y benchmarks/jsonlint-pure.l && node benchmarks/parse.js",
     "test": "npm run test:module && npm run test:cli",
