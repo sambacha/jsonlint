@@ -12,7 +12,11 @@ node_js:
   - '4'
 script:
   - npm run prepare
-  - npm test
+  - if [ `node --version | cut -c 2` -ne 4 ]; then
+      npm test;
+    else
+      npm run test:module;
+    fi
 after_success:
   - npm run coverage
   - npx semantic-release
