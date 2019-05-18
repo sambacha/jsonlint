@@ -1,7 +1,7 @@
 {
   "name": "@prantlf/jsonlint",
   "version": "0.0.0-development",
-  "description": "Validate JSON - checks syntax of JSON files.",
+  "description": "JSON validator - checks syntax of JSON files.",
   "author": "Ferdinand Prantl <prantlf@gmail.com> (http://prantl.tk)",
   "contributors": [
     "Ferdinand Prantl <prantlf@gmail.com> (http://prantl.tk)",
@@ -49,8 +49,8 @@
     "jsonlint"
   ],
   "dependencies": {
-    "nomnom": "1.8.1",
-    "JSV": "4.0.2"
+    "JSV": "4.0.2",
+    "commander": "2.20.0"
   },
   "devDependencies": {
     "benchmark": "2.1.4",

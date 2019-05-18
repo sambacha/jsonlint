@@ -39,23 +39,27 @@ or process all `.json` files in a directory:
 
     $ jsonlint -h
 
-    Usage: jsonlint [file [file [...]]] [options]
+    Usage: jsonlint [options] [<file or directory> ...]
 
-    file     files or directories to parse; otherwise uses stdin
+    JSON validator - checks syntax of JSON files.
 
     Options:
-       -v, --version             print version and exit
-       -s, --sort-keys           sort object keys
-       -E ext, --extension ext   file extensions to process for directory walk  [json,JSON]
-       -i, --in-place            overwrite the file
-       -t CHAR, --indent CHAR    character(s) to use for indentation  [  ]
-       -c, --compact             compact error display
-       -C, --comments            recognize and ignore JavaScript-style comments
-       -V, --validate            a JSON schema to use for validation
-       -e, --environment         which specification of JSON Schema the validation file uses  [json-schema-draft-03]
-       -q, --quiet               do not print the parsed json to STDOUT  [false]
-       -p, --pretty-print        force pretty printing even if invalid
+      -s, --sort-keys         sort object keys
+      -E, --extension [ext]   file extensions to process for directory walk
+                              (default: "json", "JSON")
+      -i, --in-place          overwrite the input files
+      -t, --indent [char]     characters to use for indentation (default: "  ")
+      -c, --compact           compact error display
+      -C, --comments          recognize and ignore JavaScript-style comments
+      -V, --validate [file]   JSON schema file to use for validation
+      -e, --environment [env] which specification of JSON Schema the validation
+                              file uses (default: "json-schema-draft-03")
+      -q, --quiet             do not print the parsed json to stdin
+      -p, --pretty-print      force pretty-printing even for invalid input
+      -v, --version           output the version number
+      -h, --help              output usage information
 
+    If no files or directories are specified, stdin will be parsed.
 
 ## Module Interface
 

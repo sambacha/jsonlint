@@ -5,7 +5,7 @@ const { ParserWithComments } = require('../lib/jsonlint').parser
 const parser = new Parser
 const parserWithComments = new ParserWithComments
 
-const package = require('../package.json')
+const package = require('../package')
 const input = JSON.stringify(package, undefined, 2)
 
 function parseBuiltIn () {
