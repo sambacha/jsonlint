@@ -13,20 +13,21 @@ This is a fork of the original package with the following extensions:
 
 * Handles multiple files on the command line (Greg Inman).
 * Walks directories recursively (Paul Vollmer).
+* Supports JSON schema drafts 04, 06 and 07.
 * Can parse and skip JavaScript-style comments.
-* Depends on up-to-date npm modules without installation warnings.
+* Depends on up-to-date npm modules with no installation warnings.
 
 ## Command-line Interface
 
-Install jsonlint with npm to use the command line interface:
+Install `jsonlint` with `npm`` globally to be able to use the command-line interface:
 
-    npm install @prantlf/jsonlint -g
+    npm i @prantlf/jsonlint -g
 
 Validate a file like so:
 
     jsonlint myfile.json
 
-or pipe input into stdin:
+or pipe the input into stdin:
 
     cat myfile.json | jsonlint
 
@@ -54,24 +55,31 @@ or process all `.json` files in a directory:
       -C, --comments           recognize and ignore JavaScript-style comments
       -V, --validate [file]    JSON schema file to use for validation
       -e, --environment [env]  which specification of JSON Schema the validation
-                               file uses (default: "json-schema-draft-03")
+                               file uses (default: "json-schema-draft-07")
       -q, --quiet              do not print the parsed json to stdin
       -p, --pretty-print       force pretty-printing even for invalid input
       -v, --version            output the version number
       -h, --help               output usage information
 
-    If no files or directories are specified, stdin will be parsed.
+    If no files or directories are specified, stdin will be parsed. Environments
+    for JSON schema validation "json-schema-draft-04", "json-schema-draft-06" or
+    "json-schema-draft-07".
+
 
 ## Module Interface
+
+Install `jsonlint` with `npm` locally to be able to use the module programmatically:
+
+    npm i @prantlf/jsonlint -D
 
 You might prefer methods this module to the built-in `JSON.parse` method because of a better error reporting or support for JavaScript-like comments:
 
 ```js
-var jsonlint = require('jsonlint');
+var jsonlint = require('jsonlint')
 // Fails at the position of the character "?".
-jsonlint.parse('{"creative?": false}'); // fails
+jsonlint.parse('{"creative?": false}') // fails
 // Succeeds returning the parsed JSON object.
-jsonlint.parseWithComments('{"creative": false /* for creativity */}');
+jsonlint.parseWithComments('{"creative": false /* for creativity */}')
 ```
 
 Parsing methods return the parsed object or throw an `Error`.
