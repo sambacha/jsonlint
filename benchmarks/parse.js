@@ -2,11 +2,11 @@ const createSuite = require('./createSuite')
 
 const { Parser } = require('./jsonlint-pure').parser
 const { ParserWithComments } = require('../lib/jsonlint').parser
-const parser = new Parser
-const parserWithComments = new ParserWithComments
+const parser = new Parser()
+const parserWithComments = new ParserWithComments()
 
-const package = require('../package')
-const input = JSON.stringify(package, undefined, 2)
+const pkg = require('../package')
+const input = JSON.stringify(pkg, undefined, 2)
 
 function parseBuiltIn () {
   JSON.parse(input)
