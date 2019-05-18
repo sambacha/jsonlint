@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "bin",
+      "program": "${workspaceRoot}/lib/cli.js",
+      "args": [
+        "-h"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "test",
+      "program": "${workspaceRoot}/test/all-tests",
+      "skipFiles": [
+        "<node_internals>/**/*.js"
+      ]
+    }
+  ]
+}
