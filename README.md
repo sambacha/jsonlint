@@ -62,8 +62,8 @@ or process all `.json` files in a directory:
       -h, --help               output usage information
 
     If no files or directories are specified, stdin will be parsed. Environments
-    for JSON schema validation "json-schema-draft-04", "json-schema-draft-06" or
-    "json-schema-draft-07".
+    for JSON schema validation are "json-schema-draft-04", "json-schema-draft-06"
+    or "json-schema-draft-07".
 
 
 ## Module Interface
