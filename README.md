@@ -11,8 +11,8 @@ A JSON parser and validator with a command-line client. A [pure JavaScript versi
 
 This is a fork of the original package with the following extensions:
 
-* Handles multiple files on the command line (Greg Inman).
-* Walks directories recursively (Paul Vollmer).
+* Handles multiple files on the command line (by Greg Inman).
+* Walks directories recursively (by Paul Vollmer).
 * Supports JSON schema drafts 04, 06 and 07.
 * Can parse and skip JavaScript-style comments.
 * Depends on up-to-date npm modules with no installation warnings.
@@ -43,7 +43,7 @@ or process all `.json` files in a directory:
 
     Usage: jsonlint [options] [<file or directory> ...]
 
-    JSON validator - checks syntax of JSON files.
+    JSON parser and validator - checks syntax and semantics of JSON data.
 
     Options:
       -s, --sort-keys          sort object keys
@@ -75,14 +75,21 @@ Install `jsonlint` with `npm` locally to be able to use the module programmatica
 You might prefer methods this module to the built-in `JSON.parse` method because of a better error reporting or support for JavaScript-like comments:
 
 ```js
-var jsonlint = require('jsonlint')
+const { parser } = require('jsonlint')
 // Fails at the position of the character "?".
-jsonlint.parse('{"creative?": false}') // fails
+parser.parse('{"creative?": false}') // fails
 // Succeeds returning the parsed JSON object.
-jsonlint.parseWithComments('{"creative": false /* for creativity */}')
+parser.parseWithComments('{"creative": false /* for creativity */}')
 ```
 
-Parsing methods return the parsed object or throw an `Error`.
+Parsing methods return the parsed object or throw an `Error`. If the data cam be parsed, you will be able to validate them against a JSON schema:
+
+```js
+const { parser } = require('jsonlint')
+const validator = require('jsonlint/lib/validator')
+const validate = validator.compile('string with JSON schema')
+validate(parser.parse('string with JSON data'))
+```
 
 ### Performance
 
@@ -93,11 +100,6 @@ These are the results of parsing a 2.2 KB formatted string (package.json) with N
     the parser with comment recognition x 3,406 ops/sec ±1.18% (87 runs sampled)
 
 The custom pure-JavaScript parser is a lot slower than the built-in one. However, it is more important to have a clear error reporting than the highest speed in scenarios like parsing configuration files.
-
-## Vim Plugins
-
-* [Syntastic](http://www.vim.org/scripts/script.php?script_id=2736)
-* [sourcebeautify](http://www.vim.org/scripts/script.php?script_id=4079) 
 
 ## License
 

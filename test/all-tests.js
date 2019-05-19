@@ -6,6 +6,7 @@ var path = require('path')
 var assert = require('assert')
 
 var parser = require('../lib/jsonlint').parser
+var validator = require('../lib/validator')
 
 exports['test object'] = function () {
   var json = '{"foo": "bar"}'
@@ -231,6 +232,20 @@ exports['test pass-2'] = function () {
 exports['test pass-3'] = function () {
   var json = fs.readFileSync(path.join(__dirname, '/passes/3.json')).toString()
   assert.doesNotThrow(function () { parser.parse(json) }, 'should pass')
+}
+
+exports['test schema validation success'] = function () {
+  var data = fs.readFileSync(path.join(__dirname, '/passes/3.json')).toString()
+  var schema = fs.readFileSync(path.join(__dirname, '/passes/3.schema.json')).toString()
+  var validate = validator.compile(schema)
+  assert.doesNotThrow(function () { validate(parser.parse(data)) }, 'should pass')
+}
+
+exports['test schema validation failure'] = function () {
+  var data = fs.readFileSync(path.join(__dirname, '/passes/3.schema.json')).toString()
+  var schema = fs.readFileSync(path.join(__dirname, '/passes/3.schema.json')).toString()
+  var validate = validator.compile(schema)
+  assert['throws'](function () { validate(parser.parse(data)) }, 'should throw error')
 }
 
 if (require.main === module) { require('test').run(exports) }

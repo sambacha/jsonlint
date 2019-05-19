@@ -2,3 +2,4 @@ jsonlint*.js
 test/fails
 test/passes
 test/recursive
+web/*.min.*
