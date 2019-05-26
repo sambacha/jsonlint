@@ -81,9 +81,12 @@ const { parser } = require('jsonlint')
 // Fails at the position of the character "?".
 parser.parse('{"creative": ?}') // throws an error
 // Succeeds returning the parsed JSON object.
-parser.parseWithComments('{"creative": false /* for creativity */}')
+parser.parse('{"creative": false}')
 // Accepts parameters ignoreComments and allowSingleQuotedStrings.
-parser.parse('{\'creative\': false}', { allowSingleQuotedStrings: true })
+parser.parse("{'creative': true /* for creativity */}", {
+  ignoreComments: true,
+  allowSingleQuotedStrings: true
+})
 ```
 
 Parsing methods return the parsed object or throw an `Error`. If the data cam be parsed, you will be able to validate them against a JSON schema:
@@ -97,13 +100,13 @@ validate(parser.parse('string with JSON data'))
 
 ### Performance
 
-These are the results of parsing a 2.2 KB formatted string (package.json) with Node.js 10.15.3:
+These are the results of parsing a 3.8 KB formatted string ([package.json](./package,json)) with Node.js 10.15.3:
 
-    the built-in parser x 112,338 ops/sec ±1.09% (89 runs sampled)
-    the custom parser x 3,520 ops/sec ±1.42% (88 runs sampled)
-    the parser with comment recognition x 3,406 ops/sec ±1.18% (87 runs sampled)
+    the built-in parser x 75,073 ops/sec ±0.51% (88 runs sampled)
+    the pure jison parser x 2,593 ops/sec ±0.79% (89 runs sampled)
+    the extended jison parser x 2,319 ops/sec ±0.96% (87 runs sampled)
 
-The custom pure-JavaScript parser is a lot slower than the built-in one. However, it is more important to have a clear error reporting than the highest speed in scenarios like parsing configuration files.
+The custom pure-JSON parser is a lot slower than the built-in one. However, it is more important to have a clear error reporting than the highest speed in scenarios like parsing configuration files. Extending the parser with the support for comments and single-quoted strings does not affect significantly the performance.
 
 ## License
 
