@@ -100,7 +100,7 @@ validate(parser.parse('string with JSON data'))
 
 ### Performance
 
-These are the results of parsing a 3.8 KB formatted string ([package.json](./package,json)) with Node.js 10.15.3:
+This is a part of [performance test results](./benchmarks/results/performance.md) of parsing a 3.8 KB formatted string ([package.json](./package,json)) with Node.js 10.15.3:
 
     the built-in parser x 75,073 ops/sec ±0.51% (88 runs sampled)
     the pure jison parser x 2,593 ops/sec ±0.79% (89 runs sampled)
