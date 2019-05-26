@@ -77,7 +77,7 @@ Install `jsonlint` with `npm` locally to be able to use the module programmatica
 You might prefer methods this module to the built-in `JSON.parse` method because of a better error reporting or support for JavaScript-like comments:
 
 ```js
-const { parser } = require('jsonlint')
+const { parser } = require('@prantlf/jsonlint')
 // Fails at the position of the character "?".
 parser.parse('{"creative": ?}') // throws an error
 // Succeeds returning the parsed JSON object.
@@ -92,8 +92,8 @@ parser.parse("{'creative': true /* for creativity */}", {
 Parsing methods return the parsed object or throw an `Error`. If the data cam be parsed, you will be able to validate them against a JSON schema:
 
 ```js
-const { parser } = require('jsonlint')
-const validator = require('jsonlint/lib/validator')
+const { parser } = require('@prantlf/jsonlint')
+const validator = require('@prantlf/jsonlint/lib/validator')
 const validate = validator.compile('string with JSON schema')
 validate(parser.parse('string with JSON data'))
 ```
