@@ -93,6 +93,10 @@
             <label for="comments">Ignore JavaScript-style comments</label>
           </div>
           <div>
+            <input type="checkbox" id="single-quoted-strings">
+            <label for="single-quoted-strings">Recognize single-quoted strings</label>
+          </div>
+          <div>
             <input type="checkbox" id="with-schema">
             <label for="with-schema">Use schema</label>
           </div>
@@ -113,7 +117,7 @@
   </footer>
   <script src="jsonlint.min.js" defer></script>
   <script src="ajv.min.js" defer></script>
-  <script src="drafts.min.js" defer></script>
+  <script src="schema-drafts.min.js" defer></script>
   <script src="validator.min.js" defer></script>
   <script defer>
     window.onload = function () {
@@ -128,13 +132,13 @@
         document.getElementById('result-section').style.display = 'block'
         try {
           var parser = jsonlint.parser
-          if (document.getElementById('comments').checked) {
-            parser = new parser.ParserWithComments()
-          }
-          var parsed = parser.parse(document.getElementById('data').value)
+          var parsed = parser.parse(document.getElementById('data').value, {
+            ignoreComments: document.getElementById('comments').checked,
+            allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked
+          })
           if (document.getElementById('with-schema').checked) {
             var schema = document.getElementById('schema').value
-            var validate = validator.compile(schema)
+            var validate = jsonlintValidator.compile(schema)
             validate(parsed)
           }
           document.getElementById('result').innerText = 'Data is valid!'

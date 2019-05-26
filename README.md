@@ -9,13 +9,14 @@
 
 A JSON parser and validator with a command-line client. A [pure JavaScript version](http://prantlf.github.com/jsonlint/) of the service provided at [jsonlint.com](http://jsonlint.com).
 
-This is a fork of the original package with the following extensions:
+This is a fork of the original package with the following enhancements:
 
 * Handles multiple files on the command line (by Greg Inman).
 * Walks directories recursively (by Paul Vollmer).
-* Supports JSON schema drafts 04, 06 and 07.
+* Supports JSON Schema drafts 04, 06 and 07.
 * Can parse and skip JavaScript-style comments.
 * Can accept single quotes (apostrophes) as string delimiters.
+* Implements JavaScript modules using [UMD](https://github.com/umdjs/umd) to work everywhere.
 * Depends on up-to-date npm modules with no installation warnings.
 
 ## Command-line Interface

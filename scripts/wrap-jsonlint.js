@@ -1,8 +1,14 @@
 var fs = require('fs')
 var path = require('path')
+var prefix = `(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define('jsonlint', ['exports'], factory) :
+  (global = global || self, factory(global.jsonlint = {}));
+}(this, function (exports) { 'use strict';
+
+`
 var suffix = `
 
-(function () {
   var Parser = jsonlint.Parser;
 
   function ConfigurableParser (options) {
@@ -43,11 +49,9 @@ var suffix = `
     console.warn('The method parseWithComments has been deprecated and will be removed. Use "parse(input, { ignoreComments: true })" instead.');
     return new ParserWithComments().parse(input)
   }
- 
-  jsonlint = new ConfigurableParser();
-})();
 
-if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+  jsonlint = new ConfigurableParser();
+
   exports.parser = jsonlint;
   exports.Parser = jsonlint.Parser;
   exports.ParserWithComments = jsonlint.ParserWithComments;
@@ -57,9 +61,11 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
   exports.parseWithComments = function () {
     return jsonlint.parseWithComments.apply(jsonlint, arguments);
   };
-}
+
+  Object.defineProperty(exports, '__esModule', { value: true });
+}));
 `
 var scriptFile = path.join(__dirname, '../lib/jsonlint.js')
 var scriptSource = fs.readFileSync(scriptFile, 'utf8')
-scriptSource += suffix
+scriptSource = prefix + scriptSource + suffix
 fs.writeFileSync(scriptFile, scriptSource)

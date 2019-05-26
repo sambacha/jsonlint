@@ -35,7 +35,7 @@
   "scripts": {
     "prepare": "npm run lint && npm run build",
     "lint": "standard --fix -v",
-    "build": "jison -m js -o lib/jsonlint.js src/jsonlint.y src/jsonlint.l && node scripts/wrap-script && node scripts/bundle-script lib/jsonlint.js jsonlint | uglifyjs -o web/jsonlint.min.js --source-map \"filename='jsonlint.js',url='jsonlint.min.js.map'\" && node scripts/bundle-script lib/validator.js validator | uglifyjs -o web/validator.min.js --source-map \"filename='validator.js',url='validator.min.js.map'\" && node scripts/bundle-drafts | uglifyjs -o web/drafts.min.js --source-map \"filename='drafts.js',url='drafts.min.js.map'\" && cp node_modules/ajv/dist/ajv.min.* web/",
+    "build": "jison -m js -o lib/jsonlint.js src/jsonlint.y src/jsonlint.l && node scripts/wrap-jsonlint && uglifyjs -o web/jsonlint.min.js --source-map \"filename='jsonlint.js',url='jsonlint.min.js.map'\" lib/jsonlint.js && uglifyjs -o web/validator.min.js --source-map \"filename='validator.js',url='validator.min.js.map'\" lib/validator.js && uglifyjs -o web/formatter.min.js --source-map \"filename='formatter.js',url='formatter.min.js.map'\" lib/formatter.js && node scripts/bundle-schema-drafts | uglifyjs -o web/schema-drafts.min.js --source-map \"filename='schema-drafts.js',url='schema-drafts.min.js.map'\" && cp node_modules/ajv/dist/ajv.min.* web/",
     "benchmarks": "npm run benchmarks:build && npm run benchmarks:run",
     "benchmarks:build": "jison -o benchmarks/jison/pure.js benchmarks/jison/pure.y benchmarks/jison/pure.l && jison -o benchmarks/jison/extended.js benchmarks/jison/extended.y benchmarks/jison/extended.l && pegjs benchmarks/pegjs/pure.pegjs && pegjs benchmarks/pegjs/extended.pegjs",
     "benchmarks:run": "node benchmarks/parse.js",
@@ -46,6 +46,7 @@
     "start": "python -m SimpleHTTPServer",
     "web": "npm run web:sync && npm run web:deploy",
     "web:clone": "test ! -d ../jsonlint-pages && git clone --single-branch --branch gh-pages `git remote get-url origin` ../jsonlint-pages",
+    "web:pull": "cd ../jsonlint-pages && git pull",
     "web:sync": "cp web/*.min.* ../jsonlint-pages/ && cp web/jsonlint.html ../jsonlint-pages/index.html",
     "web:deploy": "cd ../jsonlint-pages && git commit -a -m 'Deploy site updates' && git push origin gh-pages"
   },
