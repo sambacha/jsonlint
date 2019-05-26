@@ -1,3 +1,5 @@
+benchmarks/jison
+benchmarks/pegjs
 jsonlint*.js
 test/fails
 test/passes

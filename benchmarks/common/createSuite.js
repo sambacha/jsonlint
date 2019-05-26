@@ -7,7 +7,7 @@ function start () {
 function createSuite (description) {
   const suite = new Suite()
   suite.start = start
-  console.log(description)
+  console.log(`${description}:`)
   return suite
     .on('cycle', ({ target }) => {
       const { error, name } = target

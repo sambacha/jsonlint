@@ -1,9 +1,16 @@
-const createSuite = require('./createSuite')
+const createSuite = require('./common/createSuite')
 
-const { Parser } = require('./jsonlint-pure').parser
-const { ParserWithComments } = require('../lib/jsonlint').parser
-const parser = new Parser()
-const parserWithComments = new ParserWithComments()
+const chevrotainParse = require('./chevrotain/pure')
+const chevrotainExtendedParse = require('./chevrotain/extended')
+const { parse: pegjsParse } = require('./pegjs/pure')
+const { parse: pegjsExtendedParse } = require('./pegjs/extended')
+const { Parser: JisonParser } = require('./jison/pure').parser
+const { Parser: JisonExtendedParser } = require('./jison/extended').parser
+const jisonParser = new JisonParser()
+const jisonExtendedParser = new JisonExtendedParser()
+const handbuiltParse = require('./hand-built/pure')
+const handbuiltExtendedParse = require('./hand-built/pure')
+const JSON5 = require('json5')
 
 const pkg = require('../package')
 const input = JSON.stringify(pkg, undefined, 2)
@@ -12,16 +19,51 @@ function parseBuiltIn () {
   JSON.parse(input)
 }
 
-function parseCustom () {
-  parser.parse(input)
+function parsePureChevrotain () {
+  chevrotainParse(input)
 }
 
-function parseWithComments () {
-  parserWithComments.parse(input)
+function parseExtendedChevrotain () {
+  chevrotainExtendedParse(input)
 }
 
-createSuite(`Parsing JSON string ${input.length} characters long:`)
+function parseHandbuilt () {
+  handbuiltParse(input)
+}
+
+function parseExtendedHandbuilt () {
+  handbuiltExtendedParse(input)
+}
+
+function parsePurePegjs () {
+  pegjsParse(input)
+}
+
+function parseExtendedPegjs () {
+  pegjsExtendedParse(input)
+}
+
+function parsePureJison () {
+  jisonParser.parse(input)
+}
+
+function parseExtendedJison () {
+  jisonExtendedParser.parse(input)
+}
+
+function parseJSON5 () {
+  JSON5.parse(input)
+}
+
+createSuite(`Parsing JSON data ${input.length} characters long using`)
   .add('the built-in parser', parseBuiltIn)
-  .add('the custom parser', parseCustom)
-  .add('the parser with comment recognition', parseWithComments)
+  .add('the pure chevrotain parser', parsePureChevrotain)
+  .add('the extended chevrotain parser', parseExtendedChevrotain)
+  .add('the pure hand-built parser', parseHandbuilt)
+  .add('the extended hand-built parser', parseExtendedHandbuilt)
+  .add('the pure pegjs parser', parsePurePegjs)
+  .add('the extended pegjs parser', parseExtendedPegjs)
+  .add('the pure jison parser', parsePureJison)
+  .add('the extended jison parser', parseExtendedJison)
+  .add('the JSON5 parser', parseJSON5)
   .start()

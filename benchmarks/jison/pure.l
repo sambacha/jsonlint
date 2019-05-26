@@ -2,6 +2,13 @@ int  "-"?([0-9]|[1-9][0-9]+)
 exp  [eE][-+]?[0-9]+
 frac  "."[0-9]+
 
+%{
+  // Workaround for a wrong value in yy_.yylloc. lexer.yylloc is correct.
+  if (yy.parseError) {
+    yy.parseError.yy = yy.lexer
+  }
+%}
+
 %%
 
 \s+                                  /* skip whitespace */
