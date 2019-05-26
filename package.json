@@ -35,11 +35,11 @@
   "scripts": {
     "prepare": "npm run lint && npm run build",
     "lint": "standard --fix -v",
-    "build": "jison -o lib/jsonlint.js src/jsonlint.y src/jsonlint.l && node scripts/bundle-script lib/jsonlint.js jsonlint | uglifyjs -o web/jsonlint.min.js --source-map \"filename='jsonlint.js',url='jsonlint.min.js.map'\" && node scripts/bundle-script lib/validator.js validator | uglifyjs -o web/validator.min.js --source-map \"filename='validator.js',url='validator.min.js.map'\" && node scripts/bundle-drafts | uglifyjs -o web/drafts.min.js --source-map \"filename='drafts.js',url='drafts.min.js.map'\" && cp node_modules/ajv/dist/ajv.min.* web/",
+    "build": "jison -o lib/jsonlint.js src/jsonlint.y src/jsonlint.l && node scripts/bundle-script lib/jsonlint.js jsonlint && node scripts/bundle-script lib/jsonlint.js jsonlint | uglifyjs -o web/jsonlint.min.js --source-map \"filename='jsonlint.js',url='jsonlint.min.js.map'\" && node scripts/bundle-script lib/validator.js validator | uglifyjs -o web/validator.min.js --source-map \"filename='validator.js',url='validator.min.js.map'\" && node scripts/bundle-drafts | uglifyjs -o web/drafts.min.js --source-map \"filename='drafts.js',url='drafts.min.js.map'\" && cp node_modules/ajv/dist/ajv.min.* web/",
     "benchmarks": "jison -o benchmarks/jsonlint-pure.js benchmarks/jsonlint-pure.y benchmarks/jsonlint-pure.l && node benchmarks/parse.js",
     "test": "npm run test:module && npm run test:cli",
     "test:module": "node test/all-tests",
-    "test:cli": "nyc --silent node lib/cli package.json test/recursive && nyc --silent --no-clean node lib/cli -sq test/passes/hasOwnProperty.json && nyc --silent --no-clean node lib/cli -s -e json-schema-draft-04 -V test/passes/3.schema.json test/passes/3.json && nyc --silent --no-clean node lib/cli -C test/passes/comments.txt && nyc --silent --no-clean node lib/cli -v && nyc --silent --no-clean node lib/cli -h && nyc --silent --no-clean node lib/cli -pc test/fails/10.json || nyc report",
+    "test:cli": "nyc --silent node lib/cli package.json test/recursive && nyc --silent --no-clean node lib/cli -sq test/passes/hasOwnProperty.json && nyc --silent --no-clean node lib/cli -s -e json-schema-draft-04 -V test/passes/3.schema.json test/passes/3.json && nyc --silent --no-clean node lib/cli -C test/passes/comments.txt && nyc --silent --no-clean node lib/cli -S test/passes/strings.txt && nyc --silent --no-clean node lib/cli -v && nyc --silent --no-clean node lib/cli -h && nyc --silent --no-clean node lib/cli -pc test/fails/10.json || nyc report",
     "coverage": "cat coverage/lcov.info | npx coveralls",
     "start": "python -m SimpleHTTPServer",
     "web": "npm run web:sync && npm run web:deploy",

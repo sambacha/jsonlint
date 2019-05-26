@@ -15,6 +15,7 @@ This is a fork of the original package with the following extensions:
 * Walks directories recursively (by Paul Vollmer).
 * Supports JSON schema drafts 04, 06 and 07.
 * Can parse and skip JavaScript-style comments.
+* Can accept single quotes (apostrophes) as string delimiters.
 * Depends on up-to-date npm modules with no installation warnings.
 
 ## Command-line Interface
@@ -46,25 +47,25 @@ or process all `.json` files in a directory:
     JSON parser and validator - checks syntax and semantics of JSON data.
 
     Options:
-      -s, --sort-keys          sort object keys
-      -E, --extensions [ext]   file extensions to process for directory walk
-                               (default: "json", "JSON")
-      -i, --in-place           overwrite the input files
-      -t, --indent [char]      characters to use for indentation (default: "  ")
-      -c, --compact            compact error display
-      -C, --comments           recognize and ignore JavaScript-style comments
-      -V, --validate [file]    JSON schema file to use for validation
-      -e, --environment [env]  which specification of JSON Schema the validation
-                               file uses (default: "json-schema-draft-07")
-      -q, --quiet              do not print the parsed json to stdin
-      -p, --pretty-print       force pretty-printing even for invalid input
-      -v, --version            output the version number
-      -h, --help               output usage information
+      -s, --sort-keys              sort object keys
+      -E, --extensions [ext]       file extensions to process for directory walk
+                                   (default: ["json","JSON"])
+      -i, --in-place               overwrite the input files
+      -t, --indent [char]          characters to use for indentation (default: "  ")
+      -c, --compact                compact error display
+      -C, --comments               recognize and ignore JavaScript-style comments
+      -S, --single-quoted-strings  support single quotes as string delimiters
+      -V, --validate [file]        JSON schema file to use for validation
+      -e, --environment [env]      which specification of JSON Schema the validation
+                                   file uses (default: "json-schema-draft-03")
+      -q, --quiet                  do not print the parsed json to stdin
+      -p, --pretty-print           force pretty-printing even for invalid input
+      -v, --version                output the version number
+      -h, --help                   output usage information
 
     If no files or directories are specified, stdin will be parsed. Environments
     for JSON schema validation are "json-schema-draft-04", "json-schema-draft-06"
     or "json-schema-draft-07".
-
 
 ## Module Interface
 
@@ -77,9 +78,11 @@ You might prefer methods this module to the built-in `JSON.parse` method because
 ```js
 const { parser } = require('jsonlint')
 // Fails at the position of the character "?".
-parser.parse('{"creative?": false}') // fails
+parser.parse('{"creative": ?}') // throws an error
 // Succeeds returning the parsed JSON object.
 parser.parseWithComments('{"creative": false /* for creativity */}')
+// Accepts parameters ignoreComments and allowSingleQuotedStrings.
+parser.parse('{\'creative\': false}', { allowSingleQuotedStrings: true })
 ```
 
 Parsing methods return the parsed object or throw an `Error`. If the data cam be parsed, you will be able to validate them against a JSON schema:

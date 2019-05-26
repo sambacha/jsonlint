@@ -3,16 +3,41 @@ exp  [eE][-+]?[0-9]+
 frac  "."[0-9]+
 
 %{
+  function fail (reason, token) {
+    var lexer = yy.lexer
+    var message = 'Parse error on line ' + yylineno + ':'
+      + (lexer.showPosition ? '\n' + lexer.showPosition() + '\n' : ' ')
+      + reason
+    this.parseError(message, {
+      text: yytext, token: token, line: yylineno, loc: yylloc
+    })
+  }
+
+  function string (token) {
+    yytext = yytext.substr(1, yyleng - 2)
+    return token
+  }
+
+  // Workaround for a wrong value in yy_.yylloc. lexer.yylloc is correct.
+  if (yy.parseError) {
+    yy.parseError.yy = yy.lexer
+  }
+
   yy.comment = function () {
     if (!yy.ignoreComments) {
-      var lexer = yy.lexer;
-      var message = 'Parse error on line ' + (yylineno + 1) + ':'
-        + (lexer.showPosition ? '\n' + lexer.showPosition() + '\n' : ' ')
-        + 'Unexpected comment';
-      this.parseError(message, {
-        text: yytext, token: 'COMMENT', line: yylineno, loc: lexer.yyloc
-      });
+      fail.call(this, 'Unexpected comment', 'COMMENT')
     }
+  }
+
+  yy.string = function () {
+    return string('STRING')
+  }
+
+  yy.singleQuotedString = function () {
+    if (yy.allowSingleQuotedStrings) {
+      return string('SINGLEQUOTED_STRING')
+    }
+    fail.call(this, 'Unexpected single-quoted string', 'SINGLEQUOTED_STRING')
   }
 %}
 
@@ -24,7 +49,8 @@ frac  "."[0-9]+
 [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]  yy.comment.call(this)
 
 {int}{frac}?{exp}?\b    return 'NUMBER'
-\"(?:'\\'[\\"bfnrt/]|'\\u'[a-fA-F0-9]{4}|[^\\\0-\x09\x0a-\x1f"])*\"    yytext = yytext.substr(1,yyleng-2); return 'STRING'
+\"(?:'\\'[\\"bfnrt/]|'\\u'[a-fA-F0-9]{4}|[^\\\0-\x09\x0a-\x1f"])*\"    return yy.string.call(this)
+\'(?:'\\'[\\'bfnrt/]|'\\u'[a-fA-F0-9]{4}|[^\\\0-\x09\x0a-\x1f'])*\'    return yy.singleQuotedString.call(this)
 
 "{"      return '{'
 "}"      return '}'

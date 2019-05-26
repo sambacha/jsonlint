@@ -18,6 +18,16 @@ JSONString
                      .replace(/\\f/g,'\f')
                      .replace(/\\b/g,'\b');
         }
+    | SINGLEQUOTED_STRING
+        { // replace escaped characters with actual character
+          $$ = yytext.replace(/\\(\\|')/g, "$"+"1")
+                     .replace(/\\n/g,'\n')
+                     .replace(/\\r/g,'\r')
+                     .replace(/\\t/g,'\t')
+                     .replace(/\\v/g,'\v')
+                     .replace(/\\f/g,'\f')
+                     .replace(/\\b/g,'\b');
+        }
     ;
 
 JSONNumber
@@ -83,14 +93,3 @@ JSONElementList
     | JSONElementList ',' JSONValue
         {$$ = $1; $1.push($3);}
     ;
-
-%%
-
-function ParserWithComments () {
-  this.yy = { ignoreComments: true };
-}
-ParserWithComments.prototype = parser;
-parser.ParserWithComments = ParserWithComments;
-parser.parseWithComments = function (input) {
-  return new ParserWithComments().parse(input);
-}
