@@ -18,13 +18,13 @@ The [built-in] native JSON parser (`JSON.parse`) offers by far the best performa
 Validate Non-Standard JSON
 --------------------------
 
-Depending on extra features required, [Chevrotain] and [PEG.js] offer the best quality/performance ratio. Chevrotain is significantly faster, than PEG.js. It tries also harder to explain, what was wrong, which is often quite counterproductive. PEG.js explains the problems well-enough with a single sentence, even ended by a full-stop. However, Chevrotain packs additional features like recovery and reporting all errors instead of just the first one. It might him a winner for a flexibly configurable scenario too.
+Depending on extra features required, [Chevrotain] and [PEG.js] offer the best quality/performance ratio. Chevrotain is significantly faster, than PEG.js. It tries also harder to explain, what was wrong, which is often quite counterproductive. PEG.js explains the problems well-enough with a single sentence, even ended by a full-stop. However, Chevrotain packs additional features like recovery and reporting all errors instead of just the first one. The extra feature might make it a winner for a flexibly configurable scenario.
 
-Hand-built Parser
+Hand-Built Parser
 -----------------
 
 Coded parsers showed their superior performance. A well-written [hand-built] parser would aspire for becoming a winner in all categories above (!) except for the "as fast as possible". However, I tested only an example written by the Chevrotain team. It would have to optimized in both criteria - performance and error reporting quality. I would not find it worth beginning, because the performance would probably not exceed Chevrotain's by much. A parser written in JavaScript is more important for parsing and validating non-standard JSON, or primarily validating; not for a fast data exchange. It is about achieving a very good error reporting quality without loosing performance much.
-§
+
 [tested with a JSON grammar]: https://sap.github.io/chevrotain/performance/
 [performance]: ./performance.md
 [quality of error reporting]: ./errorReportingQuality.md
