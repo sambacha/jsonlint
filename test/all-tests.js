@@ -18,6 +18,22 @@ exports['test exported interface'] = function () {
   assert.equal(exported.Parser.prototype.constructor, exported.Parser)
 }
 
+exports['test context cleanup'] = function () {
+  var json = '{"foo": "bar"}'
+  assert.equal(Object.keys(parser.yy).length, 0)
+  assert.deepEqual(parser.parse(json, { ignoreComments: true }), { 'foo': 'bar' })
+  assert.equal(Object.keys(parser.yy).length, 0)
+}
+
+exports['test context restoration'] = function () {
+  var json = '{"foo": "bar"}'
+  var parser = new exported.Parser({
+    ignoreComments: false
+  })
+  assert.deepEqual(parser.parse(json, { ignoreComments: true }), { 'foo': 'bar' })
+  assert.equal(parser.yy.ignoreComments, false)
+}
+
 exports['test object'] = function () {
   var json = '{"foo": "bar"}'
   assert.deepEqual(parser.parse(json), { 'foo': 'bar' })

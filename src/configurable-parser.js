@@ -8,17 +8,39 @@ function ConfigurableParser (options) {
 }
 
 function parse (input, options) {
-  processOptions.call(this, options)
-  return Parser.prototype.parse.call(this, input)
+  var changed = processOptions.call(this, options)
+  try {
+    return Parser.prototype.parse.call(this, input)
+  } finally {
+    restoreContext.call(this, changed)
+  }
 }
 
 function processOptions (options) {
   if (options) {
-    if (options.ignoreComments) {
-      this.yy.ignoreComments = true
+    var changed = {}
+    if (options.ignoreComments !== undefined) {
+      changed.ignoreComments = this.yy.ignoreComments
+      this.yy.ignoreComments = !!options.ignoreComments
     }
-    if (options.allowSingleQuotedStrings) {
-      this.yy.allowSingleQuotedStrings = true
+    if (options.allowSingleQuotedStrings !== undefined) {
+      changed.allowSingleQuotedStrings = this.yy.allowSingleQuotedStrings
+      this.yy.allowSingleQuotedStrings = !!options.allowSingleQuotedStrings
+    }
+    return changed
+  }
+}
+
+function restoreContext (changed) {
+  if (changed) {
+    var yy = this.yy
+    for (var option in changed) {
+      var value = changed[option]
+      if (value === undefined) {
+        delete yy[option]
+      } else {
+        yy[option] = value
+      }
     }
   }
 }
