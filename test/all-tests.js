@@ -6,32 +6,77 @@ var path = require('path')
 var assert = require('assert')
 
 var exported = require('../lib/jsonlint')
+var Parser = exported.Parser
 var parser = exported.parser
+var parse = exported.parse
 var validator = require('../lib/validator')
 
-exports['test exported interface'] = function () {
-  assert.equal(typeof exported.parse, 'function')
-  assert.equal(typeof exported.parser, 'object')
-  assert.equal(typeof exported.Parser, 'function')
-  assert.equal(typeof exported.Parser.prototype, 'object')
-  assert.equal(Object.getPrototypeOf(exported.parser), exported.Parser.prototype)
-  assert.equal(exported.Parser.prototype.constructor, exported.Parser)
+var nativeParser = process.argv[2] === '--native-parser'
+if (nativeParser) {
+  parser.yy.limitedErrorInfo = true
 }
 
-exports['test context cleanup'] = function () {
-  var json = '{"foo": "bar"}'
-  assert.equal(Object.keys(parser.yy).length, 0)
-  assert.deepEqual(parser.parse(json, { ignoreComments: true }), { 'foo': 'bar' })
-  assert.equal(Object.keys(parser.yy).length, 0)
+function checkLimitedErrorInformation (error) {
+  assert.equal(typeof error.message, 'string')
+  assert.equal(typeof error.reason, 'string')
+  assert.equal(typeof error.exzerpt, 'string')
+  assert.equal(typeof error.pointer, 'string')
+  assert.equal(typeof error.location, 'object')
+  assert.equal(typeof error.location.start, 'object')
+  assert.equal(typeof error.location.start.line, 'number')
+  assert.equal(typeof error.location.start.column, 'number')
+  assert.equal(typeof error.location.start.offset, 'number')
 }
 
-exports['test context restoration'] = function () {
-  var json = '{"foo": "bar"}'
-  var parser = new exported.Parser({
-    ignoreComments: false
-  })
-  assert.deepEqual(parser.parse(json, { ignoreComments: true }), { 'foo': 'bar' })
-  assert.equal(parser.yy.ignoreComments, false)
+if (!nativeParser) {
+  exports['test exported interface'] = function () {
+    assert.equal(typeof parse, 'function')
+    assert.equal(typeof parser, 'object')
+    assert.equal(typeof Parser, 'function')
+    assert.equal(typeof Parser.prototype, 'object')
+    assert.equal(Object.getPrototypeOf(parser), Parser.prototype)
+    assert.equal(Parser.prototype.constructor, Parser)
+  }
+
+  exports['test context cleanup'] = function () {
+    var json = '{"foo": "bar"}'
+    assert.equal(Object.keys(parser.yy).length, 0)
+    assert.deepEqual(parser.parse(json, { ignoreComments: true }), { 'foo': 'bar' })
+    assert.equal(Object.keys(parser.yy).length, 0)
+  }
+
+  exports['test context restoration'] = function () {
+    var json = '{"foo": "bar"}'
+    var parser = new Parser({
+      ignoreComments: false
+    })
+    assert.deepEqual(parser.parse(json, { ignoreComments: true }), { 'foo': 'bar' })
+    assert.equal(parser.yy.ignoreComments, false)
+  }
+
+  exports['test limited error information'] = function () {
+    var json = '{"foo": ?}'
+    var parser = new Parser({
+      ignoreComments: true,
+      limitedErrorInfo: true
+    })
+    try {
+      parser.parse(json)
+      assert.fail()
+    } catch (error) {
+      checkLimitedErrorInformation(error)
+    }
+  }
+} else {
+  exports['test limited error information'] = function () {
+    var json = '{"foo": ?}'
+    try {
+      parser.parse(json)
+      assert.fail()
+    } catch (error) {
+      checkLimitedErrorInformation(error)
+    }
+  }
 }
 
 exports['test object'] = function () {

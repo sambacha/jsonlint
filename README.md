@@ -17,6 +17,7 @@ This is a fork of the original package with the following enhancements:
 * Can parse and skip JavaScript-style comments.
 * Can accept single quotes (apostrophes) as string delimiters.
 * Implements JavaScript modules using [UMD](https://github.com/umdjs/umd) to work everywhere.
+* Can use the native JSON parser to gain the best performance, while showing error messages pf the same quality.
 * Depends on up-to-date npm modules with no installation warnings.
 
 ## Command-line Interface
@@ -82,19 +83,20 @@ const { parser } = require('@prantlf/jsonlint')
 parser.parse('{"creative": ?}') // throws an error
 // Succeeds returning the parsed JSON object.
 parser.parse('{"creative": false}')
-// Accepts parameters ignoreComments and allowSingleQuotedStrings.
+// Recognizes comments and single-quoted strings.
 parser.parse("{'creative': true /* for creativity */}", {
   ignoreComments: true,
   allowSingleQuotedStrings: true
 })
 ```
 
-Parsing methods return the parsed object or throw an `Error`. If the data cam be parsed, you will be able to validate them against a JSON schema:
+Parsing methods return the parsed object or throw an error. If the data cam be parsed, you will be able to validate them against a JSON schema in addition:
 
 ```js
 const { parser } = require('@prantlf/jsonlint')
 const validator = require('@prantlf/jsonlint/lib/validator')
 const validate = validator.compile('string with JSON schema')
+// Throws an error in case of failure.
 validate(parser.parse('string with JSON data'))
 ```
 
@@ -107,6 +109,27 @@ This is a part of [performance test results](./benchmarks/results/performance.md
     the extended jison parser x 2,319 ops/sec ±0.96% (87 runs sampled)
 
 The custom pure-JSON parser is a lot slower than the built-in one. However, it is more important to have a clear error reporting than the highest speed in scenarios like parsing configuration files. Extending the parser with the support for comments and single-quoted strings does not affect significantly the performance.
+
+You can enable the (fastest) native JSON parser, if you do not need the full structured error information provided by the custom parser. The error thrown by the native parser includes the same rich message, but some properties are missing, because the native parser does not return structured information. Parts of the message are returned instead to allow custom error reporting:
+
+```js
+const { parse } = require('@prantlf/jsonlint')
+try {
+  parse('{"creative": ?}', { limitedErrorInfo: true })
+} catch (error) {
+  const { message, reason, exzerpt, pointer, location } = error
+  const { column, line, offset } = location.start
+  // Logs the same text as is included in the `message` property:
+  //  Parse error on line 1, column 14:
+  //  {"creative": ?}
+  //  -------------^
+  //  Unexpected token ?
+  console.log(`Parse error on line ${line}, ${column} column:
+${exzerpt}
+${pointer}
+${reason}`)
+}
+```
 
 ## License
 
