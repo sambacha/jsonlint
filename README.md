@@ -19,6 +19,7 @@ This is a fork of the original package with the following enhancements:
 * Implements JavaScript modules using [UMD](https://github.com/umdjs/umd) to work everywhere.
 * Can use the native JSON parser to gain the best performance, while showing error messages pf the same quality.
 * Depends on up-to-date npm modules with no installation warnings.
+* Small size - 13.4 kB minified, 4.6 kB gzipped.
 
 ## Command-line Interface
 
