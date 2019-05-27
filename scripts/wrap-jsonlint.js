@@ -8,47 +8,16 @@ var prefix = `(function (global, factory) {
 
 `
 var suffix = `
-
-  var Parser = jsonlint.Parser;
-
-  function ConfigurableParser (options) {
-    Parser.prototype.constructor.call(this);
-    processOptions.call(this, options);
-  }
-
-  function parse (input, options) {
-    processOptions.call(this, options);
-    return Parser.prototype.parse.call(this, input);
-  }
-
-  function processOptions (options) {
-    if (options) {
-      if (options.ignoreComments) {
-        this.yy.ignoreComments = true;
-      }
-      if (options.allowSingleQuotedStrings) {
-        this.yy.allowSingleQuotedStrings = true;
-      }
-    }
-  }
-
-  ConfigurableParser.prototype = Object.create(Parser.prototype);
-  ConfigurableParser.prototype.constructor = ConfigurableParser;
-  ConfigurableParser.prototype.parse = parse;
-  ConfigurableParser.prototype.Parser = ConfigurableParser;
-
-  jsonlint = new ConfigurableParser();
-
   exports.parser = jsonlint;
-  exports.Parser = jsonlint.ConfigurableParser;
-  exports.parse = function () {
-    return jsonlint.parse.apply(jsonlint, arguments);
-  };
+  exports.Parser = jsonlint.Parser;
+  exports.parse = jsonlint.parse.bind(jsonlint)
 
   Object.defineProperty(exports, '__esModule', { value: true });
 }));
 `
 var scriptFile = path.join(__dirname, '../lib/jsonlint.js')
 var scriptSource = fs.readFileSync(scriptFile, 'utf8')
-scriptSource = prefix + scriptSource + suffix
+var wrapperFile = path.join(__dirname, '../src/configurable-parser.js')
+var wrapperSource = fs.readFileSync(wrapperFile, 'utf8')
+scriptSource = prefix + scriptSource + wrapperSource + suffix
 fs.writeFileSync(scriptFile, scriptSource)

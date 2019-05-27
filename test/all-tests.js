@@ -5,8 +5,18 @@ var path = require('path')
 
 var assert = require('assert')
 
-var parser = require('../lib/jsonlint').parser
+var exported = require('../lib/jsonlint')
+var parser = exported.parser
 var validator = require('../lib/validator')
+
+exports['test exported interface'] = function () {
+  assert.equal(typeof exported.parse, 'function')
+  assert.equal(typeof exported.parser, 'object')
+  assert.equal(typeof exported.Parser, 'function')
+  assert.equal(typeof exported.Parser.prototype, 'object')
+  assert.equal(Object.getPrototypeOf(exported.parser), exported.Parser.prototype)
+  assert.equal(exported.Parser.prototype.constructor, exported.Parser)
+}
 
 exports['test object'] = function () {
   var json = '{"foo": "bar"}'
