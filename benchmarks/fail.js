@@ -5,7 +5,7 @@ const createGuard = require('./common/createGuard')
 const chevrotainParse = require('./chevrotain/pure')
 const handbuiltParse = require('./hand-built/pure')
 const { parse: pegjsParse } = require('./pegjs/pure')
-const jisonParser = require('./jison/extended').parser
+const jisonParser = require('./jison/pure').parser
 const JSON5 = require('json5')
 
 const inputFile = path.join(__dirname, '../test/passes/comments.txt')
