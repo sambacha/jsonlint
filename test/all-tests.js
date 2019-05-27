@@ -38,6 +38,17 @@ if (!nativeParser) {
     assert.equal(Parser.prototype.constructor, Parser)
   }
 
+  exports['test function'] = function () {
+    var json = '{"foo": "bar"}'
+    assert.deepEqual(parse(json), { 'foo': 'bar' })
+  }
+
+  exports['test function object'] = function () {
+    var json = '{"foo": "bar"}'
+    var parser = new Parser()
+    assert.deepEqual(parser.parse(json), { 'foo': 'bar' })
+  }
+
   exports['test context cleanup'] = function () {
     var json = '{"foo": "bar"}'
     assert.equal(Object.keys(parser.yy).length, 0)
