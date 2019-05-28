@@ -39,6 +39,7 @@
     "benchmarks:build": "jison -o benchmarks/jison/pure.js benchmarks/jison/pure.y benchmarks/jison/pure.l && jison -o benchmarks/jison/extended.js benchmarks/jison/extended.y benchmarks/jison/extended.l && pegjs benchmarks/pegjs/pure.pegjs && pegjs benchmarks/pegjs/extended.pegjs",
     "benchmarks:run": "node benchmarks/parse.js",
     "test": "npm run test:module && npm run test:cli",
+    "test:old": "node test/all-tests && node test/all-tests --native-parser && node lib/cli package.json test/recursive && node lib/cli -sq test/passes/hasOwnProperty.json && node lib/cli -s -e json-schema-draft-04 -V test/passes/3.schema.json test/passes/3.json && node lib/cli -C test/passes/comments.txt && node lib/cli -S test/passes/strings.txt && node lib/cli -v && node lib/cli -h",
     "test:module": "nyc --silent node test/all-tests && nyc --silent --no-clean node test/all-tests --native-parser",
     "test:cli": "nyc --silent --no-clean node lib/cli package.json test/recursive && nyc --silent --no-clean node lib/cli -sq test/passes/hasOwnProperty.json && nyc --silent --no-clean node lib/cli -s -e json-schema-draft-04 -V test/passes/3.schema.json test/passes/3.json && nyc --silent --no-clean node lib/cli -C test/passes/comments.txt && nyc --silent --no-clean node lib/cli -S test/passes/strings.txt && nyc --silent --no-clean node lib/cli -v && nyc --silent --no-clean node lib/cli -h && nyc --silent --no-clean node lib/cli -pc test/fails/10.json || nyc report",
     "coverage": "cat coverage/lcov.info | npx coveralls",

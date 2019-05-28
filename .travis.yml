@@ -16,7 +16,7 @@ script:
   - if [ `node --version | cut -c 2` -ne 4 ]; then
       npm test;
     else
-      npm run test:module;
+      npm run test:old;
     fi
 after_success:
   - test `node --version | cut -c 2,3` -eq 10 && npm run coverage
