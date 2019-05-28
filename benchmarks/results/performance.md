@@ -8,6 +8,19 @@ I modified the grammars to support extensions to the JSON format, which may be h
 * Ignoring JavaScript-like single-line and multiple-line comments. Useful for documenting configuration files.
 * Accepting single quotes (apostrophes) as string delimiters. Useful for input files using them to avoid escaping of quotation marks.
 
+Code Size
+---------
+
+The size of the JavaScript code is important, when the application runs in the web browser.
+
+| File                   | Source  | Minified | Gzipped  |
+| :--------------------- | ------: | -------: | -------: |
+| hand-built/extended.js |   6.0 kB |   1.8 kB |  0.8 kB |
+| jison/extended.js      |  25.5 kB |  11.0 kB |  3.9 kB |
+| pegjs/extended.js      |  54.1 kB |  13.5 kB |  3.4 kB |
+| json5/dist/index.js    |  56.8 kB |  30.9 kB |  9.1 kB |
+| chevrotain/extended.js | 403.4 kB | 153.7 kB | 38.3 kB |
+
 Results
 -------
 

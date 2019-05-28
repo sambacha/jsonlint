@@ -18,7 +18,7 @@ The [built-in] native JSON parser (`JSON.parse`) offers by far the best performa
 Validate Non-Standard JSON
 --------------------------
 
-Depending on extra features required, [Chevrotain] and [PEG.js] offer the best quality/performance ratio. Chevrotain is significantly faster, than PEG.js. It tries also harder to explain, what was wrong, which is often quite counterproductive. PEG.js explains the problems well-enough with a single sentence, even ended by a full-stop. However, Chevrotain packs additional features like recovery and reporting all errors instead of just the first one. The extra feature might make it a winner for a flexibly configurable scenario.
+Depending on extra features required, [Chevrotain] and [PEG.js] offer the best quality/performance ratio. Chevrotain is significantly faster, than PEG.js. It tries also harder to explain, what was wrong, which is often quite counterproductive. PEG.js explains the problems well-enough with a single sentence, even ended by a full-stop. However, Chevrotain packs additional features like recovery and reporting all errors instead of just the first one. The extra feature might make it a winner for a flexibly configurable scenario. However, the Chevrotain parser needs significantly more code, than all the others.
 
 Hand-Built Parser
 -----------------
