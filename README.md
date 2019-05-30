@@ -60,7 +60,7 @@ or process all `.json` files in a directory:
       -S, --single-quoted-strings  support single quotes as string delimiters
       -V, --validate [file]        JSON schema file to use for validation
       -e, --environment [env]      which specification of JSON Schema the validation
-                                   file uses (default: "json-schema-draft-03")
+                                   file uses
       -q, --quiet                  do not print the parsed json to stdin
       -p, --pretty-print           force pretty-printing even for invalid input
       -v, --version                output the version number
@@ -68,7 +68,7 @@ or process all `.json` files in a directory:
 
     If no files or directories are specified, stdin will be parsed. Environments
     for JSON schema validation are "json-schema-draft-04", "json-schema-draft-06"
-    or "json-schema-draft-07".
+    or "json-schema-draft-07". If not specified, it will be auto-detected.
 
 ## Module Interface
 
