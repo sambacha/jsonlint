@@ -326,8 +326,15 @@ exports['test schema validation success'] = function () {
 exports['test schema validation failure'] = function () {
   var data = fs.readFileSync(path.join(__dirname, '/passes/3.schema.json')).toString()
   var schema = fs.readFileSync(path.join(__dirname, '/passes/3.schema.json')).toString()
-  var validate = validator.compile(schema)
-  assert['throws'](function () { validate(parser.parse(data)) }, 'should throw error')
+  var validate = validator.compile(schema, {
+    limitedErrorInfo: nativeParser,
+    environment: 'json-schema-draft-04'
+  })
+  assert['throws'](function () {
+    validate(parser.parse(data, {
+      limitedErrorInfo: nativeParser
+    }))
+  }, 'should throw error')
 }
 
 if (require.main === module) { require('test').run(exports) }

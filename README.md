@@ -101,6 +101,17 @@ const validate = validator.compile('string with JSON schema')
 validate(parser.parse('string with JSON data'))
 ```
 
+Compiling JSON schema supports the same options for customisation and performance improvement as parsing JSON data (`ignoreComments`, `allowSingleQuotedStrings`, `limitedErrorInfo`). They can be passed as the second (object) parameter. The optional second `environment` parameter can be passed as an additional property in the options object:
+
+```js
+const validator = require('@prantlf/jsonlint/lib/validator')
+const validate = validator.compile('string with JSON schema', {
+  limitedErrorInfo: true,
+  environment: 'json-schema-draft-04'
+})
+validate(jsonData)
+```
+
 ### Performance
 
 This is a part of [performance test results](./benchmarks/results/performance.md) of parsing a 3.8 KB formatted string ([package.json](./package,json)) with Node.js 10.15.3:
