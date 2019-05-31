@@ -137,13 +137,15 @@
         document.getElementById('result-section').style.display = 'block'
         try {
           var parser = jsonlint.parser
-          var parsed = parser.parse(document.getElementById('data').value, {
+          var parserOptions = {
             ignoreComments: document.getElementById('comments').checked,
-            allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked
-          })
+            allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked,
+            limitedErrorInfo: !(options.comments || options.singleQuotedStrings)
+          }
+          var parsed = parser.parse(document.getElementById('data').value, parserOptions)
           if (document.getElementById('with-schema').checked) {
             var schema = document.getElementById('schema').value
-            var validate = jsonlintValidator.compile(schema)
+            var validate = jsonlintValidator.compile(schema, parserOptions)
             validate(parsed)
           }
           document.getElementById('result').innerText = 'Data is valid!'
