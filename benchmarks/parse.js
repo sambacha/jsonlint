@@ -6,6 +6,8 @@ const { parse: pegjsParse } = require('./pegjs/pure')
 const { parse: pegjsExtendedParse } = require('./pegjs/extended')
 const { Parser: JisonParser } = require('./jison/pure').parser
 const { Parser: JisonExtendedParser } = require('./jison/extended').parser
+const { parse: jjuPureParse } = require('./jju/pure')
+const { parse: jjuExtendedParse } = require('./jju/extended')
 const jisonParser = new JisonParser()
 const jisonExtendedParser = new JisonExtendedParser()
 const handbuiltParse = require('./hand-built/pure')
@@ -35,6 +37,14 @@ function parseExtendedHandbuilt () {
   handbuiltExtendedParse(input)
 }
 
+function parsePureJju () {
+  jjuPureParse(input)
+}
+
+function parseExtendedJju () {
+  jjuExtendedParse(input, { json5: true })
+}
+
 function parsePurePegjs () {
   pegjsParse(input)
 }
@@ -61,6 +71,8 @@ createSuite(`Parsing JSON data ${input.length} characters long using`)
   .add('the extended chevrotain parser', parseExtendedChevrotain)
   .add('the pure hand-built parser', parseHandbuilt)
   .add('the extended hand-built parser', parseExtendedHandbuilt)
+  .add('the pure jju parser', parsePureJju)
+  .add('the extended jju parser', parseExtendedJju)
   .add('the pure pegjs parser', parsePurePegjs)
   .add('the extended pegjs parser', parseExtendedPegjs)
   .add('the pure jison parser', parsePureJison)

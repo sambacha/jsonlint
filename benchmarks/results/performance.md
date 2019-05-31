@@ -17,6 +17,7 @@ The size of the JavaScript code is important, when the application runs in the w
 | :--------------------- | ------: | -------: | -------: |
 | hand-built/extended.js |   6.0 kB |   1.8 kB |  0.8 kB |
 | jison/extended.js      |  25.5 kB |  11.0 kB |  3.9 kB |
+| jju/extended.js        |  29.8 kB |  16.6 kB |  5.4 kB |
 | pegjs/extended.js      |  54.1 kB |  13.5 kB |  3.4 kB |
 | json5/dist/index.js    |  56.8 kB |  30.9 kB |  9.1 kB |
 | chevrotain/extended.js | 403.4 kB | 153.7 kB | 38.3 kB |
@@ -26,17 +27,19 @@ Results
 
 This is a result of the [benchmark] run by `npm run benchmarks`. The numbers should be understood as relative ones:
 
-    Parsing JSON data 3758 characters long using:
-      the built-in parser x 75,073 ops/sec ±0.51% (88 runs sampled)
-      the pure chevrotain parser x 15,536 ops/sec ±1.26% (89 runs sampled)
-      the extended chevrotain parser x 14,461 ops/sec ±0.59% (92 runs sampled)
-      the pure hand-built parser x 11,926 ops/sec ±0.64% (91 runs sampled)
-      the extended hand-built parser x 11,962 ops/sec ±0.44% (94 runs sampled)
-      the pure pegjs parser x 3,398 ops/sec ±0.84% (91 runs sampled)
-      the extended pegjs parser x 3,039 ops/sec ±0.92% (91 runs sampled)
-      the pure jison parser x 2,593 ops/sec ±0.79% (89 runs sampled)
-      the extended jison parser x 2,319 ops/sec ±0.96% (87 runs sampled)
-      the JSON5 parser x 2,267 ops/sec ±0.66% (86 runs sampled)
+    Parsing JSON data 4673 characters long using:
+      the built-in parser x 61,588 ops/sec ±0.75% (80 runs sampled)
+      the pure chevrotain parser x 14,034 ops/sec ±0.86% (85 runs sampled)
+      the extended chevrotain parser x 12,802 ops/sec ±1.20% (86 runs sampled)
+      the pure hand-built parser x 9,479 ops/sec ±0.83% (89 runs sampled)
+      the extended hand-built parser x 9,339 ops/sec ±1.38% (86 runs sampled)
+      the pure jju parser x 11,396 ops/sec ±1.05% (86 runs sampled)
+      the extended jju parser x 8,221 ops/sec ±0.99% (87 runs sampled)
+      the pure pegjs parser x 2,854 ops/sec ±0.80% (87 runs sampled)
+      the extended pegjs parser x 2,619 ops/sec ±1.08% (89 runs sampled)
+      the pure jison parser x 2,516 ops/sec ±1.31% (84 runs sampled)
+      the extended jison parser x 2,434 ops/sec ±0.74% (89 runs sampled)
+      the JSON5 parser x 2,002 ops/sec ±0.54% (90 runs sampled)
     The fastest one was the built-in parser.
 
 I looked further at capabilities and licenses of the parsers.
@@ -53,7 +56,7 @@ I looked further at capabilities and licenses of the parsers.
 * Does not generate code from tokens and grammar; uses a coded grammar.
 * The fastest one with an adaptable code base.
 * Supports a limited recovery to be able to continue parsing after an error occurs.
-* Can reports all errors that occur in the whole input.
+* Can report all errors that occur in the whole input.
 * Differs between lexical and parsing errors.
 * The license (Apache 2) is not compatible with JSONLint.
 
@@ -64,6 +67,13 @@ I looked further at capabilities and licenses of the parsers.
 * Very fast one.
 * Error reporting would need to be improved.
 * The license (Apache 2) is not compatible with JSONLint.
+
+[JJU]
+-----
+
+* A part of other utilities to work with JSON/JSON5 documents.
+* Very fast one.
+* Supports `reviver` for the full compatibility with JSON.parse.
 
 [PEG.JS]
 --------
@@ -90,6 +100,7 @@ I looked further at capabilities and licenses of the parsers.
 [Built-in]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
 [Chevrotain]: https://github.com/SAP/chevrotain
 [Hand-built]: https://github.com/sap/chevrotain/blob/gh-pages/performance/jsonParsers/handbuilt/handbuilt.js
+[JJU]: http://rlidwka.github.io/jju/
 [PEG.JS]: http://pegjs.org/
 [Jison]: http://zaach.github.io/jison/
 [JSON5]: https://json5.org/

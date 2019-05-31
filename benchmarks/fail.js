@@ -1,15 +1,40 @@
-const fs = require('fs')
-const path = require('path')
 const createGuard = require('./common/createGuard')
 
 const chevrotainParse = require('./chevrotain/pure')
 const handbuiltParse = require('./hand-built/pure')
+const { parse: jjuParse } = require('./jju/pure')
 const { parse: pegjsParse } = require('./pegjs/pure')
 const jisonParser = require('./jison/pure').parser
 const JSON5 = require('json5')
 
-const inputFile = path.join(__dirname, '../test/passes/comments.txt')
-const inputSource = fs.readFileSync(inputFile).toString()
+const inputSources = [
+  `{
+  # Sets a value to a property.
+  "property": "value"
+}`,
+  `{
+  1,
+  "property": "value"
+}`,
+  `{
+  "property" "value"
+}`,
+  `{
+  "property":
+}`,
+  `{
+  "property": "value"
+  "count": 1
+}`,
+  `{
+  "property": "value",
+}`,
+  `{
+  "property": "value"`,
+  ` `,
+  ``
+]
+let inputSource
 
 function getOffset (line, column) {
   if (line > 1) {
@@ -130,29 +155,33 @@ function parseChevrotain () {
     }
     const cursor = `line ${line}, column ${column}`
     const position = showPosition({ offset })
+    message = message.charAt(0).toUpperCase() + message.substr(1)
     throw new SyntaxError(`${type} error on ${cursor}:\n${position}\n${message}`)
   }
-  // let messages = []
-  // for (let { line, column, offset, message } of lexErrors) {
-  //   const cursor = `line ${line}, column ${column}`
-  //   const position = showPosition({ offset })
-  //   messages.push(`Lexical error on ${cursor}:\n${position}\n${message}`)
-  // }
-  // if (parseErrors.length) {
-  //   for (let { message, token } of parseErrors) {
-  //     const { startColumn, startLine, startOffset } = token
-  //     const cursor = `line ${startLine}, column ${startColumn}`
-  //     const position = showPosition({ offset: startOffset })
-  //     messages.push(`Parse error on ${cursor}:\n${position}\n${message}`)
-  //   }
-  // }
-  // if (messages.length) {
-  //   throw new SyntaxError(messages.join('\n'))
-  // }
 }
 
 function parseHandbuilt () {
   handbuiltParse(inputSource)
+}
+
+function improveJjuError (error) {
+  const { message, row, column } = error
+  const cursor = `line ${row}, column ${column}`
+  const offset = getOffset(row, column)
+  const position = showPosition({ offset })
+  const reason = message
+    .split(/\r?\n/)[0]
+    .replace(/ at \d+:\d+$/, '')
+  error.message = `Parse error on ${cursor}:\n${position}\n${reason}`
+  throw error
+}
+
+function parseJju () {
+  try {
+    jjuParse(inputSource)
+  } catch (error) {
+    improveJjuError(error)
+  }
 }
 
 function improvePegjsError (error) {
@@ -181,7 +210,10 @@ function improveJSON5Error (error) {
   const cursor = `line ${lineNumber}, column ${columnNumber}`
   const offset = getOffset(lineNumber, columnNumber)
   const position = showPosition({ offset })
-  message = message.replace(/ at \d+:\d+$/, '')
+  message = message
+    .replace(/^JSON5: /, '')
+    .replace(/ at \d+:\d+$/, '')
+  message = message.charAt(0).toUpperCase() + message.substr(1)
   error.message = `Parse error on ${cursor}:\n${position}\n${message}`
   throw error
 }
@@ -194,11 +226,20 @@ function parseJSON5 () {
   }
 }
 
-createGuard('Parsing invalid JSON data using')
-  .add('the built-in parser', parseBuiltIn)
-  .add('the chevrotain parser', parseChevrotain)
-  .add('the hand-built parser', parseHandbuilt)
-  .add('the pegjs parser', parsePegjs)
-  .add('the jison parser', parseJison)
-  .add('the JSON5 parser', parseJSON5)
-  .start()
+for (let test of inputSources) {
+  inputSource = test
+  const formattedTest = test
+    .split(/\r?\n/)
+    .map(line => '  ' + line)
+    .join('\n')
+  createGuard(`Parsing invalid JSON data:\n${formattedTest}\nusing`)
+    .add('the built-in parser', parseBuiltIn)
+    .add('the chevrotain parser', parseChevrotain)
+    .add('the hand-built parser', parseHandbuilt)
+    .add('the jju parser', parseJju)
+    .add('the pegjs parser', parsePegjs)
+    .add('the jison parser', parseJison)
+    .add('the JSON5 parser', parseJSON5)
+    .start()
+  console.log()
+}

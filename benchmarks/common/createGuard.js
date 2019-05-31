@@ -18,7 +18,7 @@ class Guard extends EventEmitter {
         this.emit('before:test', { target: test })
         test.callback()
       } catch (error) {
-        console.error(formatTestMessage(error))
+        console.log(formatTestMessage(error))
       }
     }
   }
