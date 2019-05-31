@@ -11,6 +11,7 @@ var parser = exported.parser
 var parse = exported.parse
 var validator = require('../lib/validator')
 
+var oldNode = process.version.startsWith('v4.');
 var nativeParser = process.argv[2] === '--native-parser'
 if (nativeParser) {
   parser.yy.limitedErrorInfo = true
@@ -20,12 +21,14 @@ function checkLimitedErrorInformation (error) {
   assert.equal(typeof error.message, 'string')
   assert.equal(typeof error.reason, 'string')
   assert.equal(typeof error.exzerpt, 'string')
-  assert.equal(typeof error.pointer, 'string')
-  assert.equal(typeof error.location, 'object')
-  assert.equal(typeof error.location.start, 'object')
-  assert.equal(typeof error.location.start.line, 'number')
-  assert.equal(typeof error.location.start.column, 'number')
-  assert.equal(typeof error.location.start.offset, 'number')
+  if (!oldNode) {
+    assert.equal(typeof error.pointer, 'string')
+    assert.equal(typeof error.location, 'object')
+    assert.equal(typeof error.location.start, 'object')
+    assert.equal(typeof error.location.start.line, 'number')
+    assert.equal(typeof error.location.start.column, 'number')
+    assert.equal(typeof error.location.start.offset, 'number')
+  }
 }
 
 if (!nativeParser) {
