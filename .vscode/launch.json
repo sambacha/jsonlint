@@ -19,6 +19,9 @@
       "request": "launch",
       "name": "test",
       "program": "${workspaceRoot}/test/all-tests",
+      "args": [
+        "--native-parser"
+      ],
       "skipFiles": [
         "<node_internals>/**/*.js"
       ]
