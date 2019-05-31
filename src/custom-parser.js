@@ -18,20 +18,30 @@ function getOffset (input, line, column) {
 }
 
 function improveCustomError (input, error) {
-  var location = error.hash.loc
-  var line = location.first_line
-  var column = location.first_column
-  var offset = getOffset(input, line, column)
-  var lines = error.message.split(/\r?\n/)
-  error.reason = lines[3]
-  error.exzerpt = lines[2]
-  error.pointer = lines[1]
-  error.location = {
-    start: {
-      line: line,
-      column: column,
-      offset: offset
+  var location = error.hash && error.hash.loc
+  if (location) {
+    var line = location.first_line
+    var column = location.first_column
+    var offset = getOffset(input, line, column)
+    error.location = {
+      start: {
+        line: line,
+        column: column,
+        offset: offset
+      }
     }
+  }
+  var message = error.message
+  var lines = message.split(/\r?\n/)
+  if (lines.length > 1) {
+    error.reason = lines[3]
+    error.exzerpt = lines[2]
+    error.pointer = lines[1]
+  } else {
+    error.reason = message
+    error.exzerpt = input
+      .substr(0, 40)
+      .replace(/\n/g, '')
   }
   return error
 }

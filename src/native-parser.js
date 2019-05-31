@@ -34,33 +34,104 @@ function getPositionContext (input, offset) {
   }
 }
 
-function improveNativeError (input, error) {
+function getReason (error) {
   var message = error.message
-  var match = / in JSON at position (\d+)$/.exec(message)
-  var offset
-  if (match) {
-    offset = +match[1]
-    message = message.substr(0, match.index)
-  } else {
-    offset = input.length
+    .replace('JSON.parse: ', '') // SpiderMonkey
+    .replace('JSON Parse error: ', '') // SquirrelFish
+  var firstCharacter = message.charAt(0)
+  if (firstCharacter >= 'a') {
+    message = firstCharacter.toUpperCase() + message.substr(1)
   }
-  var location = getLineAndColumn(input, offset)
-  var line = location.line
-  var column = location.column
-  location = 'line ' + line + ', column ' + column
+  return message
+}
+
+function getLocationOnV8 (input, reason) {
+  var match = / in JSON at position (\d+)$/.exec(reason)
+  if (match) {
+    var offset = +match[1]
+    var location = getLineAndColumn(input, offset)
+    return {
+      offset: offset,
+      line: location.line,
+      column: location.column,
+      reason: reason.substr(0, match.index)
+    }
+  }
+}
+
+function checkUnexpectedEndOnV8 (input, reason) {
+  var match = / end of JSON input$/.exec(reason)
+  if (match) {
+    var offset = input.length
+    var location = getLineAndColumn(input, offset)
+    return {
+      offset: offset,
+      line: location.line,
+      column: location.column,
+      reason: reason.substr(0, match.index + 4)
+    }
+  }
+}
+
+function getLocationOnSpiderMonkey (input, reason) {
+  var match = / at line (\d+) column (\d+) of the JSON data$/.exec(reason)
+  if (match) {
+    var line = +match[1]
+    var column = +match[2]
+    var offset = getOffset(input, line, column) // eslint-disable-line no-undef
+    return {
+      offset: offset,
+      line: line,
+      column: column,
+      reason: reason.substr(0, match.index)
+    }
+  }
+}
+
+function getTexts (reason, input, offset, line, column) {
   var position = getPositionContext(input, offset)
   var exzerpt = position.exzerpt
-  var pointer = position.pointer
-  error.message = 'Parse error on ' + location + ':\n' +
-    exzerpt + '\n' + pointer + '\n' + message
-  error.reason = message
-  error.exzerpt = exzerpt
-  error.pointer = pointer
-  error.location = {
-    start: {
-      column: column,
-      line: line,
-      offset: offset
+  var message, pointer
+  if (typeof line === 'number') {
+    pointer = position.pointer
+    message = 'Parse error on line ' + line + ', column ' +
+      column + ':\n' + exzerpt + '\n' + pointer + '\n' + reason
+  } else {
+    message = 'Parse error in JSON input:\n' + exzerpt + '\n' + reason
+  }
+  return {
+    message: message,
+    exzerpt: exzerpt,
+    pointer: pointer
+  }
+}
+
+function improveNativeError (input, error) {
+  var reason = getReason(error)
+  var location = getLocationOnV8(input, reason) ||
+    checkUnexpectedEndOnV8(input, reason) ||
+    getLocationOnSpiderMonkey(input, reason)
+  var offset, line, column
+  if (location) {
+    offset = location.offset
+    line = location.line
+    column = location.column
+    reason = location.reason
+  } else {
+    offset = 0
+  }
+  error.reason = reason
+  var texts = getTexts(reason, input, offset, line, column)
+  error.message = texts.message
+  error.exzerpt = texts.exzerpt
+  if (texts.pointer) {
+    error.pointer = texts.pointer
+    error.location = {
+      start: {
+        column: column,
+        line: line,
+        offset: offset
+      }
     }
   }
   return error
