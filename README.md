@@ -114,7 +114,7 @@ validate(jsonData)
 
 ### Performance
 
-This is a part of an output from the [parser benchmark](./benchmarks#json-parser-comparison), when parsing a 4.2 KB formatted string ([package.json](./package,json)) with Node.js 10.15.3:
+This is a part of an output from the [parser benchmark](./benchmarks#json-parser-comparison), when parsing a 4.2 KB formatted string ([package.json](./package.json)) with Node.js 10.15.3:
 
     the built-in parser x 61,588 ops/sec ±0.75% (80 runs sampled)
     the pure jison parser x 2,516 ops/sec ±1.31% (84 runs sampled)
