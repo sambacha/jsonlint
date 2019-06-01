@@ -1,4 +1,5 @@
 {
+  "name": "jsonlint-benchmarks",
   "private": true,
   "scripts": {
     "prepare": "jison -o jison/pure.js jison/pure.y jison/pure.l && jison -o jison/extended.js jison/extended.y jison/extended.l && pegjs pegjs/pure.pegjs && pegjs pegjs/extended.pegjs"
