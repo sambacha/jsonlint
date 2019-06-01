@@ -29,45 +29,45 @@ var unescapeMap = {
   '/': '/'
 }
 
-function formatError (input, msg, position, lineno, column, json5) {
-  var result = msg + ' at ' + (lineno + 1) + ':' + (column + 1)
+function formatError (input, message, position, lineNumber, column, json5) {
+  var result = message + ' at ' + (lineNumber + 1) + ':' + (column + 1)
 
-  var tmppos = position - column - 1
+  var startPosition = position - column - 1
 
-  var srcline = ''
+  var sourceLine = ''
 
   var underline = ''
 
   var isLineTerminator = json5 ? Uni.isLineTerminator : Uni.isLineTerminatorJSON
 
   // output no more than 70 characters before the wrong ones
-  if (tmppos < position - 70) {
-    tmppos = position - 70
+  if (startPosition < position - 70) {
+    startPosition = position - 70
   }
 
   while (1) {
-    var chr = input[++tmppos]
+    var chr = input[++startPosition]
 
-    if (isLineTerminator(chr) || tmppos === input.length) {
-      if (position >= tmppos) {
+    if (isLineTerminator(chr) || startPosition === input.length) {
+      if (position >= startPosition) {
         // ending line error, so show it after the last char
         underline += '^'
       }
       break
     }
-    srcline += chr
+    sourceLine += chr
 
-    if (position === tmppos) {
+    if (position === startPosition) {
       underline += '^'
-    } else if (position > tmppos) {
-      underline += input[tmppos] === '\t' ? '\t' : ' '
+    } else if (position > startPosition) {
+      underline += input[startPosition] === '\t' ? '\t' : ' '
     }
 
     // output no more than 78 characters on the string
-    if (srcline.length > 78) break
+    if (sourceLine.length > 78) break
   }
 
-  return result + '\n' + srcline + '\n' + underline
+  return result + '\n' + sourceLine + '\n' + underline
 }
 
 function parse (input, options) {
@@ -99,10 +99,10 @@ function parse (input, options) {
 
   var stack = []
 
-  function fail (msg) {
+  function fail (message) {
     var column = position - lineStart
 
-    if (!msg) {
+    if (!message) {
       if (position < length) {
         var token = '\'' +
           JSON
@@ -112,13 +112,13 @@ function parse (input, options) {
             .replace(/\\"/g, '"') +
           '\''
 
-        if (!msg) msg = 'Unexpected token ' + token
+        if (!message) message = 'Unexpected token ' + token
       } else {
-        if (!msg) msg = 'Unexpected end of input'
+        if (!message) message = 'Unexpected end of input'
       }
     }
 
-    var error = SyntaxError(formatError(input, msg, position, lineNumber, column, json5))
+    var error = SyntaxError(formatError(input, message, position, lineNumber, column, json5))
     error.row = lineNumber + 1
     error.column = column + 1
     throw error
@@ -250,11 +250,11 @@ function parse (input, options) {
 
   function parseKeyword (keyword) {
     // keyword[0] is not checked because it should've checked earlier
-    var _pos = position
+    var startPosition = position
     var len = keyword.length
     for (var i = 1; i < len; i++) {
       if (position >= length || keyword[i] !== input[position]) {
-        position = _pos - 1
+        position = startPosition - 1
         fail()
       }
       position++
