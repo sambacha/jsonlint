@@ -1,4 +1,6 @@
 .nyc_output
+benchmarks/jison/*.js
+benchmarks/pegjs/*.js
 coverage
 node_modules
 jsonlint*.js
