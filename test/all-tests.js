@@ -11,7 +11,7 @@ var parser = exported.parser
 var parse = exported.parse
 var validator = require('../lib/validator')
 
-var oldNode = process.version.startsWith('v4.');
+var oldNode = process.version.startsWith('v4.')
 var nativeParser = process.argv[2] === '--native-parser'
 if (nativeParser) {
   parser.yy.limitedErrorInfo = true
