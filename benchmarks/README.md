@@ -10,11 +10,11 @@ Install additional NPM modules for the benchmarks and generate JSON parsers from
 
 ## Testing
 
-Run performance tests:
+Run [performance tests] to compare the parsing speed:
 
     node parse
 
-Compare error handling by testing invalid input and printing various error messages:
+Compare error handling by [testing invalid input] and printing various error messages:
 
     node fail
 
@@ -25,3 +25,5 @@ If you modify some grammars, you have to regenerate parsers before running the t
 [performance]: ./results/performance.md
 [quality of error reporting]: ./results/errorReportingQuality.md
 [the best parsers for particular scenarios]: ./results/evaluation.md
+[performance tests]: ./parse.js
+[testing invalid input]: ./fail.js
