@@ -23,7 +23,6 @@ Depending on extra features required, [Chevrotain] and [JJU] offer the best qual
 [tested with a JSON grammar]: https://sap.github.io/chevrotain/performance/
 [performance]: ./performance.md
 [quality of error reporting]: ./errorReportingQuality.md
-[benchmark]: ./benchmarks/parse.js
 [built-in]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
 [Chevrotain]: https://github.com/SAP/chevrotain
 [JJU]: http://rlidwka.github.io/jju/

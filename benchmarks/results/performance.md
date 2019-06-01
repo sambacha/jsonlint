@@ -96,7 +96,7 @@ I looked further at capabilities and licenses of the parsers.
 
 [tested with a JSON grammar]: https://sap.github.io/chevrotain/performance/
 [quality of error reporting]: ./errorReportingQuality.md
-[benchmark]: ./benchmarks/parse.js
+[benchmark]: ../parse.js
 [Built-in]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
 [Chevrotain]: https://github.com/SAP/chevrotain
 [Hand-built]: https://github.com/sap/chevrotain/blob/gh-pages/performance/jsonParsers/handbuilt/handbuilt.js

@@ -509,7 +509,7 @@ The context information can be added using the line and column of the error.
 
 [tested with a JSON grammar]: https://sap.github.io/chevrotain/performance/
 [performance]: ./performance.md
-[test]: ./benchmarks/fail.js
+[test]: ../fail.js
 [Built-in]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
 [Chevrotain]: https://github.com/SAP/chevrotain
 [Hand-built]: https://github.com/sap/chevrotain/blob/gh-pages/performance/jsonParsers/handbuilt/handbuilt.js
