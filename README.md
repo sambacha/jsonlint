@@ -17,7 +17,7 @@ This is a fork of the original package with the following enhancements:
 * Can parse and skip JavaScript-style comments.
 * Can accept single quotes (apostrophes) as string delimiters.
 * Implements JavaScript modules using [UMD](https://github.com/umdjs/umd) to work everywhere.
-* Can use the native JSON parser to gain the [best performance](./benchmarks/README.md), while showing error messages of the same quality.
+* Can use the native JSON parser to gain the [best performance](./benchmarks#json-parser-comparison), while showing error messages of the same quality.
 * Depends on up-to-date npm modules with no installation warnings.
 * Small size - 13.4 kB minified, 4.6 kB gzipped.
 
@@ -114,7 +114,7 @@ validate(jsonData)
 
 ### Performance
 
-This is a part of an output from the [parser benchmark](./benchmarks/README.md), when parsing a 4.2 KB formatted string ([package.json](./package,json)) with Node.js 10.15.3:
+This is a part of an output from the [parser benchmark](./benchmarks#json-parser-comparison), when parsing a 4.2 KB formatted string ([package.json](./package,json)) with Node.js 10.15.3:
 
     the built-in parser x 61,588 ops/sec ±0.75% (80 runs sampled)
     the pure jison parser x 2,516 ops/sec ±1.31% (84 runs sampled)
