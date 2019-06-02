@@ -15,7 +15,7 @@ var oldNode = process.version.startsWith('v4.')
 var nativeParser = process.argv[2] === '--native-parser'
 parse = nativeParser ? exported.parseNative : exported.parseCustom
 
-function checkLimitedErrorInformation (error) {
+function checkErrorInformation (error) {
   assert.equal(typeof error.message, 'string')
   assert.equal(typeof error.reason, 'string')
   assert.equal(typeof error.exzerpt, 'string')
@@ -69,14 +69,13 @@ if (!nativeParser) {
   exports['test limited error information'] = function () {
     var json = '{"foo": ?}'
     var parser = new Parser({
-      ignoreComments: true,
-      limitedErrorInfo: true
+      ignoreComments: true
     })
     try {
       parser.parse(json)
       assert.fail()
     } catch (error) {
-      checkLimitedErrorInformation(error)
+      checkErrorInformation(error)
     }
   }
 } else {
@@ -86,7 +85,7 @@ if (!nativeParser) {
       parse(json)
       assert.fail()
     } catch (error) {
-      checkLimitedErrorInformation(error)
+      checkErrorInformation(error)
     }
   }
 }
@@ -328,12 +327,12 @@ exports['test schema validation failure'] = function () {
   var data = fs.readFileSync(path.join(__dirname, '/passes/3.schema.json')).toString()
   var schema = fs.readFileSync(path.join(__dirname, '/passes/3.schema.json')).toString()
   var validate = validator.compile(schema, {
-    limitedErrorInfo: nativeParser,
+    ignoreComments: !nativeParser,
     environment: 'json-schema-draft-04'
   })
   assert['throws'](function () {
     validate(parse(data, {
-      limitedErrorInfo: nativeParser
+      ignoreComments: !nativeParser
     }))
   }, 'should throw error')
 }
