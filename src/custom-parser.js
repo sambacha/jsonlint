@@ -44,6 +44,7 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
 
   var json5 = options.mode === 'json5'
   var ignoreComments = options.ignoreComments || options.mode === 'cjson' || json5
+  var ignoreTrailingCommas = options.ignoreTrailingCommas || json5
   var allowSingleQuotedStrings = options.allowSingleQuotedStrings || json5
   var reviver = options.reviver
 
@@ -230,7 +231,7 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
 
       var char = input[position++]
       if (char === '}' && key === undefined) {
-        if (!json5 && isNotEmpty) {
+        if (!ignoreTrailingCommas && isNotEmpty) {
           --position
           fail('Trailing comma in object')
         }
@@ -305,7 +306,7 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
           fail('Elisions are not supported')
         }
       } else if (char === ']') {
-        if (!json5 && item === undefined && result.length) {
+        if (!ignoreTrailingCommas && item === undefined && result.length) {
           --position
           fail('Trailing comma in array')
         }

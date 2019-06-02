@@ -14,6 +14,10 @@ function processOptions (options) {
       changed.ignoreComments = this.ignoreComments
       this.ignoreComments = options.ignoreComments
     }
+    if (options.ignoreTrailingCommas !== undefined) {
+      changed.ignoreTrailingCommas = this.ignoreTrailingCommas
+      this.ignoreTrailingCommas = options.ignoreTrailingCommas
+    }
     if (options.allowSingleQuotedStrings !== undefined) {
       changed.allowSingleQuotedStrings = this.allowSingleQuotedStrings
       this.allowSingleQuotedStrings = options.allowSingleQuotedStrings
@@ -44,7 +48,8 @@ var oldNode = typeof process !== 'undefined' && process.version.startsWith('v4.'
 
 function needsCustomParser () {
   return this.ignoreComments || this.allowSingleQuotedStrings ||
-    this.mode === 'cjson' || this.mode === 'json5' || isSafari || oldNode
+    this.ignoreTrailingCommas || this.mode === 'cjson' || this.mode === 'json5' ||
+    isSafari || oldNode
 }
 
 function getReviver (options) {

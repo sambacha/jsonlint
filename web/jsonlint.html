@@ -97,6 +97,10 @@
             <label for="comments">Ignore JavaScript-style comments</label>
           </div>
           <div>
+            <input type="checkbox" id="trailing-commas">
+            <label for="trailing-commas">Ignore trailing commas</label>
+          </div>
+          <div>
             <input type="checkbox" id="single-quoted-strings">
             <label for="single-quoted-strings">Recognize single-quoted strings</label>
           </div>
@@ -139,6 +143,7 @@
           var parser = jsonlint.parser
           var parserOptions = {
             ignoreComments: document.getElementById('comments').checked,
+            ignoreTrailingCommas: document.getElementById('trailing-commas').checked,
             allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked
           }
           var parsed = parser.parse(document.getElementById('data').value, parserOptions)
