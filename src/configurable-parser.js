@@ -39,9 +39,12 @@ function restoreContext (changed) {
   }
 }
 
+var isSafari = typeof navigator !== 'undefined' && /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor)
+var oldNode = typeof process !== 'undefined' && process.version.startsWith('v4.')
+
 function needsCustomParser () {
   return this.ignoreComments || this.allowSingleQuotedStrings ||
-    this.mode === 'cjson' || this.mode === 'json5'
+    this.mode === 'cjson' || this.mode === 'json5' || isSafari || oldNode
 }
 
 function getReviver (options) {
