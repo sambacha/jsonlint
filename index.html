@@ -97,8 +97,16 @@
             <label for="comments">Ignore JavaScript-style comments</label>
           </div>
           <div>
+            <input type="checkbox" id="trailing-commas">
+            <label for="trailing-commas">Ignore trailing commas</label>
+          </div>
+          <div>
             <input type="checkbox" id="single-quoted-strings">
             <label for="single-quoted-strings">Recognize single-quoted strings</label>
+          </div>
+          <div>
+            <input type="checkbox" checked id="duplicate-object-keys">
+            <label for="single-quoted-strings">Allow duplicate object keys</label>
           </div>
           <div>
             <input type="checkbox" id="with-schema">
@@ -139,8 +147,9 @@
           var parser = jsonlint.parser
           var parserOptions = {
             ignoreComments: document.getElementById('comments').checked,
+            ignoreTrailingCommas: document.getElementById('trailing-commas').checked,
             allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked,
-            limitedErrorInfo: !(options.comments || options.singleQuotedStrings)
+            allowDuplicateObjectKeys: document.getElementById('duplicate-object-keys').checked,
           }
           var parsed = parser.parse(document.getElementById('data').value, parserOptions)
           if (document.getElementById('with-schema').checked) {
