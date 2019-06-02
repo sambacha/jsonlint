@@ -7,8 +7,9 @@
       "name": "cli",
       "program": "${workspaceRoot}/lib/cli.js",
       "args": [
-        "-C",
-        "test/passes/1.json"
+        "-M",
+        "json5",
+        "test/passes/json5.txt"
       ],
       "skipFiles": [
         "<node_internals>/**/*.js"
