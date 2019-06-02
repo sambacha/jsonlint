@@ -4,11 +4,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "bin",
+      "name": "cli",
       "program": "${workspaceRoot}/lib/cli.js",
       "args": [
         "-C",
-        "package.json"
+        "test/passes/1.json"
       ],
       "skipFiles": [
         "<node_internals>/**/*.js"
@@ -18,7 +18,7 @@
       "type": "node",
       "request": "launch",
       "name": "test",
-      "program": "${workspaceRoot}/test/all-tests",
+      "program": "${workspaceRoot}/test/parse1.js",
       "args": [
         "--native-parser"
       ],

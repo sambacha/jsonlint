@@ -139,8 +139,7 @@
           var parser = jsonlint.parser
           var parserOptions = {
             ignoreComments: document.getElementById('comments').checked,
-            allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked,
-            limitedErrorInfo: !(options.comments || options.singleQuotedStrings)
+            allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked
           }
           var parsed = parser.parse(document.getElementById('data').value, parserOptions)
           if (document.getElementById('with-schema').checked) {

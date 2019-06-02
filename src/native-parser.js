@@ -137,9 +137,9 @@ function improveNativeError (input, error) {
   return error
 }
 
-function parseNatively (input) { // eslint-disable-line no-unused-vars
+function parseNative (input, reviver) { // eslint-disable-line no-unused-vars
   try {
-    return JSON.parse(input)
+    return JSON.parse(input, reviver)
   } catch (error) {
     throw improveNativeError(input, error)
   }

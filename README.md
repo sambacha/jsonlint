@@ -17,9 +17,9 @@ This is a fork of the original package with the following enhancements:
 * Can parse and skip JavaScript-style comments.
 * Can accept single quotes (apostrophes) as string delimiters.
 * Implements JavaScript modules using [UMD](https://github.com/umdjs/umd) to work everywhere.
-* Can use the native JSON parser to gain the [best performance](./benchmarks#json-parser-comparison), while showing error messages of the same quality.
+* Prefers using the native JSON parser to gain the [best performance](./benchmarks#json-parser-comparison), while showing error messages of the same quality.
 * Depends on up-to-date npm modules with no installation warnings.
-* Small size - 13.4 kB minified, 4.6 kB gzipped.
+* Small size - 17.6 kB minified, 6.1 kB gzipped.
 
 ## Command-line Interface
 
@@ -91,25 +91,22 @@ parse("{'creative': true /* for creativity */}", {
 })
 ```
 
-Parsing methods return the parsed object or throw an error. If the data cam be parsed, you will be able to validate them against a JSON schema in addition:
+The parsing method returns the parsed object or throws an error. If the parsing succeeds, you can to validate the input against a JSON schema too:
 
 ```js
-const { parser } = require('@prantlf/jsonlint')
-const validator = require('@prantlf/jsonlint/lib/validator')
-const validate = validator.compile('string with JSON schema')
+const { parse } = require('@prantlf/jsonlint')
+const { compile } = require('@prantlf/jsonlint/lib/validator')
+const validate = compile('string with JSON schema')
 // Throws an error in case of failure.
-validate(parser.parse('string with JSON data'))
+validate(parse('string with JSON data'))
 ```
 
-Compiling JSON schema supports the same options for customisation and performance improvement as parsing JSON data (`ignoreComments`, `allowSingleQuotedStrings`, `limitedErrorInfo`). They can be passed as the second (object) parameter. The optional second `environment` parameter can be passed as an additional property in the options object:
+Compiling JSON schema supports the same options as parsing JSON data (`ignoreComments`, `allowSingleQuotedStrings`). They can be passed as the second (object) parameter. The optional second `environment` parameter can be passed as an additional property in the options object too:
 
 ```js
-const validator = require('@prantlf/jsonlint/lib/validator')
-const validate = validator.compile('string with JSON schema', {
-  limitedErrorInfo: true,
+const validate = compile('string with JSON schema', {
   environment: 'json-schema-draft-04'
 })
-validate(jsonData)
 ```
 
 ### Performance
@@ -117,25 +114,42 @@ validate(jsonData)
 This is a part of an output from the [parser benchmark](./benchmarks#json-parser-comparison), when parsing a 4.2 KB formatted string ([package.json](./package.json)) with Node.js 10.15.3:
 
     the built-in parser x 61,588 ops/sec ±0.75% (80 runs sampled)
-    the pure jison parser x 2,516 ops/sec ±1.31% (84 runs sampled)
-    the extended jison parser x 2,434 ops/sec ±0.74% (89 runs sampled)
+    the pure jju parser x 11,396 ops/sec ±1.05% (86 runs sampled)
+    the extended jju parser x 8,221 ops/sec ±0.99% (87 runs sampled)
 
-The custom JSON parser is [a lot slower](./benchmarks/results/performance.md#results) than the built-in one. However, it is more important to have a [clear error reporting](./benchmarks/results/errorReportingQuality.md#results) than the highest speed in scenarios like parsing configuration files. Extending the parser with the support for comments and single-quoted strings does not affect significantly the performance.
+A custom JSON parser is [a lot slower](./benchmarks/results/performance.md#results) than the built-in one. However, it is more important to have a [clear error reporting](./benchmarks/results/errorReportingQuality.md#results) than the highest speed in scenarios like parsing configuration files. Extending the parser with the support for comments and single-quoted strings does not affect significantly the performance.
 
-You can enable the (fastest) native JSON parser by the `limitedErrorInfo` option, if you do not need the full structured error information provided by the custom parser. The error thrown by the native parser includes the same rich message, but some properties are missing, because the native parser does not return structured information. Parts of the message are returned instead to allow custom error reporting:
+### Error Handling
+
+If parsing fails, a `SyntaxError` will be thrown with the following properties:
+
+| Property   | Description                               |
+| ---------- | ----------------------------------------- |
+| `message`  | the full multi-line error message         |
+| `reason`   | one-line explanation of the error         |
+| `exzerpt`  | part of the input string around the error |
+| `pointer`  | "--^" pointing to the error in `exzerpt`  |
+| `location` | object pointing to the error location     |
+
+The `location` object contains properties `line`, `column` and `offset`.
+
+The following code logs twice the following message:
+
+    Parse error on line 1, column 14:
+    {"creative": ?}
+    -------------^
+    Unexpected token ?
 
 ```js
 const { parse } = require('@prantlf/jsonlint')
 try {
-  parse('{"creative": ?}', { limitedErrorInfo: true })
+  parse('{"creative": ?}')
 } catch (error) {
   const { message, reason, exzerpt, pointer, location } = error
   const { column, line, offset } = location.start
-  // Logs the same text as is included in the `message` property:
-  //  Parse error on line 1, column 14:
-  //  {"creative": ?}
-  //  -------------^
-  //  Unexpected token ?
+  // Logs the complete error message:
+  console.log(message)
+  // Logs the same text as included in the `message` property:
   console.log(`Parse error on line ${line}, ${column} column:
 ${exzerpt}
 ${pointer}

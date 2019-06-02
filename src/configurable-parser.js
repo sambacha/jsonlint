@@ -1,37 +1,26 @@
-/* globals jsonlint, needsCustomParser, parseCustom, parseNatively */
+/* globals navigator, process, parseCustom, parseNative */
 
-var Parser = jsonlint.Parser
-
-function ConfigurableParser (options) {
-  Parser.prototype.constructor.call(this)
-  processOptions.call(this, options)
-}
-
-function parse (input, options) {
-  var changed = processOptions.call(this, options)
-  try {
-    return needsCustomParser.call(this)
-      ? parseCustom.call(this, Parser.prototype.parse, input)
-      : parseNatively(input)
-  } finally {
-    restoreContext.call(this, changed)
+function Parser (options, deprecate) {
+  if (deprecate !== false) {
+    console.warn('DEPRECATED: Do not instantiate an object of the class Parser. Call the method `parse` directly exported from the main module (`lib/jsonlint`).')
   }
+  processOptions.call(this, options)
 }
 
 function processOptions (options) {
   if (options) {
     var changed = {}
     if (options.ignoreComments !== undefined) {
-      changed.ignoreComments = this.yy.ignoreComments
-      this.yy.ignoreComments = options.ignoreComments
+      changed.ignoreComments = this.ignoreComments
+      this.ignoreComments = options.ignoreComments
     }
     if (options.allowSingleQuotedStrings !== undefined) {
-      changed.allowSingleQuotedStrings = this.yy.allowSingleQuotedStrings
-      this.yy.allowSingleQuotedStrings = options.allowSingleQuotedStrings
+      changed.allowSingleQuotedStrings = this.allowSingleQuotedStrings
+      this.allowSingleQuotedStrings = options.allowSingleQuotedStrings
     }
-    if (options.limitedErrorInfo !== undefined) {
-      changed.limitedErrorInfo = this.yy.limitedErrorInfo
-      this.yy.limitedErrorInfo = options.limitedErrorInfo
+    if (options.mode !== undefined) {
+      changed.mode = this.mode
+      this.mode = options.mode
     }
     return changed
   }
@@ -39,21 +28,45 @@ function processOptions (options) {
 
 function restoreContext (changed) {
   if (changed) {
-    var yy = this.yy
     for (var option in changed) {
       var value = changed[option]
       if (value === undefined) {
-        delete yy[option]
+        delete this[option]
       } else {
-        yy[option] = value
+        this[option] = value
       }
     }
   }
 }
 
-ConfigurableParser.prototype = Object.create(Parser.prototype)
-ConfigurableParser.prototype.constructor = ConfigurableParser
-ConfigurableParser.prototype.parse = parse
-ConfigurableParser.prototype.Parser = ConfigurableParser
+function needsCustomParser () {
+  return this.ignoreComments || this.allowSingleQuotedStrings ||
+    this.mode === 'cjson' || this.mode === 'json5'
+}
 
-jsonlint = new ConfigurableParser() // eslint-disable-line no-global-assign
+function getReviver (options) {
+  if (typeof options === 'function') {
+    return options
+  } else if (options) {
+    return options.reviver
+  }
+}
+
+Parser.prototype.constructor = Parser
+Parser.prototype.Parser = Parser
+
+Parser.prototype.parse = function (input, options, deprecate) {
+  if (deprecate !== false) {
+    console.warn('DEPRECATED: Do not call the instance method `parse`. method  Call the `parse` directly exported from the main module (`lib/jsonlint`).')
+  }
+  var changed = processOptions.call(this, options)
+  try {
+    return needsCustomParser.call(this)
+      ? parseCustom.call(this, input, options)
+      : parseNative(input, getReviver(options))
+  } finally {
+    restoreContext.call(this, changed)
+  }
+}
+
+var jsonlint = new Parser(undefined, false) // eslint-disable-line no-unused-vars
