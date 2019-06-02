@@ -13,25 +13,45 @@ This is a fork of the original package with the following enhancements:
 
 * Handles multiple files on the command line (by Greg Inman).
 * Walks directories recursively (by Paul Vollmer).
+* Provides 100% compatible interface to the native `JSON.parse` method.
+* Optionally recognizes JavaScript-style comments and single quoted strings.
 * Supports JSON Schema drafts 04, 06 and 07.
-* Can parse and skip JavaScript-style comments.
-* Can accept single quotes (apostrophes) as string delimiters.
+* Prefers the native JSON parser to gain the [best performance](./benchmarks#json-parser-comparison), while showing error messages of the same quality.
 * Implements JavaScript modules using [UMD](https://github.com/umdjs/umd) to work everywhere.
-* Prefers using the native JSON parser to gain the [best performance](./benchmarks#json-parser-comparison), while showing error messages of the same quality.
 * Depends on up-to-date npm modules with no installation warnings.
 * Small size - 17.6 kB minified, 6.1 kB gzipped.
 
+## Synopsis
+
+Check syntax of JSON files:
+
+    jsonlint -q data/*.json
+
+Parse a JSON string:
+
+```js
+const { parse } = require('@prantlf/jsonlint')
+const data = parse('{"creative": false}')
+```
+
+Example of an error message:
+
+    Parse error on line 1, column 14:
+    {"creative": ?}
+    -------------^
+    Unexpected token ?
+
 ## Command-line Interface
 
-Install `jsonlint` with `npm`` globally to be able to use the command-line interface:
+Install `jsonlint` with `npm`` globally to be able to use the command-line interface in any directory:
 
     npm i @prantlf/jsonlint -g
 
-Validate a file like so:
+Validate a single file:
 
     jsonlint myfile.json
 
-or pipe the input into stdin:
+or pipe the JSON input into `stdin`:
 
     cat myfile.json | jsonlint
 
@@ -39,7 +59,7 @@ or process all `.json` files in a directory:
 
     jsonlint mydir
 
-`jsonlint` will either report a syntax error with details or pretty print the source if it is valid.
+By default, `jsonlint` will either report a syntax error with details or pretty-print the source if it is valid.
 
 ### Options
 
@@ -74,24 +94,43 @@ or process all `.json` files in a directory:
 
 Install `jsonlint` with `npm` locally to be able to use the module programmatically:
 
-    npm i @prantlf/jsonlint -D
+    npm i @prantlf/jsonlint -S
 
-You might prefer methods this module to the built-in `JSON.parse` method because of a better error reporting or support for JavaScript-like comments:
+The only exported item is the `parse` method, which parses a string in the JSON format to a JavaScript object, array, or value:
 
 ```js
 const { parse } = require('@prantlf/jsonlint')
 // Fails at the position of the character "?".
-parse('{"creative": ?}') // throws an error
+const data2 = parse('{"creative": ?}') // throws an error
 // Succeeds returning the parsed JSON object.
-parse('{"creative": false}')
+const data3 = parse('{"creative": false}')
 // Recognizes comments and single-quoted strings.
-parse("{'creative': true /* for creativity */}", {
+const data3 = parse("{'creative': true /* for creativity */}", {
   ignoreComments: true,
   allowSingleQuotedStrings: true
 })
 ```
 
-The parsing method returns the parsed object or throws an error. If the parsing succeeds, you can to validate the input against a JSON schema too:
+The exported `parse` method is compatible with the native `JSON.parse` method. The second parameter provides the additional functionality:
+
+    parse(input, [reviver|options])
+
+| Parameter  | Description                                 |
+| ---------- | ------------------------------------------- |
+| `input`    | text in the JSON format (string)            |
+| `reviver`  | converts object and array values (function) |
+| `options`  | customize parsing options (object)          |
+
+The `parse` method offers more detailed [error information](#error-handling), than the native `JSON.parse` method and it supports additional parsing options:
+
+| Option                     | Description                 |
+| -------------------------- | --------------------------- |
+| `ignoreComments`           | ignores single-line and multi-line JavaScript-style comments during parsing as another "whitespace" |
+| `allowSingleQuotedStrings` | accepts strings delimited by single-quotes too |
+
+### Schema Validation
+
+The parsing method returns the parsed object or throws an error. If the parsing succeeds, you can validate the input against a JSON schema using the `lib/validator` module:
 
 ```js
 const { parse } = require('@prantlf/jsonlint')
@@ -101,7 +140,7 @@ const validate = compile('string with JSON schema')
 validate(parse('string with JSON data'))
 ```
 
-Compiling JSON schema supports the same options as parsing JSON data (`ignoreComments`, `allowSingleQuotedStrings`). They can be passed as the second (object) parameter. The optional second `environment` parameter can be passed as an additional property in the options object too:
+Compiling JSON schema supports the same options as parsing JSON data (except for `reviver`). They can be passed as the second (object) parameter. The optional second `environment` parameter can be passed either as a string or as an additional property in the options object too:
 
 ```js
 const validate = compile('string with JSON schema', {
