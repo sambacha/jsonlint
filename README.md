@@ -22,6 +22,11 @@ This is a fork of the original package with the following enhancements:
 * Depends on up-to-date npm modules with no installation warnings.
 * Small size - 17.6 kB minified, 6.1 kB gzipped.
 
+Integration to the favourite task loaders is provided by the following modules:
+
+* [`grunt`] - [`@prantlf/grunt-jsonlint`]
+* [`gulp`] - [`@prantlf/gulp-jsonlint`]
+
 ## Synopsis
 
 Check syntax of JSON files:
@@ -224,6 +229,10 @@ Licensed under the MIT license.
 [JSON5]: https://spec.json5.org
 [JSON Schema]: https://json-schema.org
 [UMD]: https://github.com/umdjs/umd
+[`grunt`]: https://gruntjs.com/
+[`gulp`]: http://gulpjs.com/
+[`@prantlf/grunt-jsonlint`]: https://github.com/prantlf/grunt-jsonlint
+[`@prantlf/gulp-jsonlint`]: https://github.com/prantlf/gulp-jsonlint
 [best performance]: ./benchmarks#json-parser-comparison
 [parser benchmark]: ./benchmarks#json-parser-comparison
 [a lot slower]: ./benchmarks/results/performance.md#results
