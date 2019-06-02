@@ -15,7 +15,7 @@ This is a fork of the original package with the following enhancements:
 * Walks directories recursively (by Paul Vollmer).
 * Provides 100% compatible interface to the native `JSON.parse` method.
 * Optionally recognizes JavaScript-style comments and single quoted strings.
-* Optionally ignores trailing commas in objects and arrays.
+* Optionally ignores trailing commas and reports duplicate object keys as an error.
 * Supports [JSON Schema] drafts 04, 06 and 07.
 * Prefers the native JSON parser to gain the [best performance], while showing error messages of the same quality.
 * Implements JavaScript modules using [UMD] to work everywhere.
@@ -81,6 +81,7 @@ By default, `jsonlint` will either report a syntax error with details or pretty-
       -C, --comments               recognize and ignore JavaScript-style comments
       -S, --single-quoted-strings  support single quotes as string delimiters
       -T, --trailing-commas'       ignore trailing commas in objects and arrays
+      -D, --no-duplicate-keys      report duplicate object keys as an error
       -V, --validate [file]        JSON schema file to use for validation
       -e, --environment [env]      which specification of JSON Schema
                                    the validation file uses
@@ -132,6 +133,7 @@ The `parse` method offers more detailed [error information](#error-handling), th
 | `ignoreComments`           | ignores single-line and multi-line JavaScript-style comments during parsing as another "whitespace" (boolean) |
 | `ignoreTrailingCommas`     | ignores trailing commas in objects and arrays (boolean) |
 | `allowSingleQuotedStrings` | accepts strings delimited by single-quotes too (boolean) |
+| `allowDuplicateObjectKeys` | allows reporting duplicate object keys as an error (boolean) |
 | `mode`                     | sets multiple options according to the type of input data (string) |
 
 The `mode` parameter (string) sets parsing options to match a common format of input data:

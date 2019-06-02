@@ -105,6 +105,10 @@
             <label for="single-quoted-strings">Recognize single-quoted strings</label>
           </div>
           <div>
+            <input type="checkbox" checked id="duplicate-object-keys">
+            <label for="single-quoted-strings">Allow duplicate object keys</label>
+          </div>
+          <div>
             <input type="checkbox" id="with-schema">
             <label for="with-schema">Use schema</label>
           </div>
@@ -144,7 +148,8 @@
           var parserOptions = {
             ignoreComments: document.getElementById('comments').checked,
             ignoreTrailingCommas: document.getElementById('trailing-commas').checked,
-            allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked
+            allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked,
+            allowDuplicateObjectKeys: document.getElementById('duplicate-object-keys').checked,
           }
           var parsed = parser.parse(document.getElementById('data').value, parserOptions)
           if (document.getElementById('with-schema').checked) {

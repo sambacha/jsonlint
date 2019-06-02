@@ -22,6 +22,10 @@ function processOptions (options) {
       changed.allowSingleQuotedStrings = this.allowSingleQuotedStrings
       this.allowSingleQuotedStrings = options.allowSingleQuotedStrings
     }
+    if (options.allowDuplicateObjectKeys !== undefined) {
+      changed.allowDuplicateObjectKeys = this.allowDuplicateObjectKeys
+      this.allowDuplicateObjectKeys = options.allowDuplicateObjectKeys
+    }
     if (options.mode !== undefined) {
       changed.mode = this.mode
       this.mode = options.mode
@@ -47,9 +51,9 @@ var isSafari = typeof navigator !== 'undefined' && /Safari/.test(navigator.userA
 var oldNode = typeof process !== 'undefined' && process.version.startsWith('v4.')
 
 function needsCustomParser () {
-  return this.ignoreComments || this.allowSingleQuotedStrings ||
-    this.ignoreTrailingCommas || this.mode === 'cjson' || this.mode === 'json5' ||
-    isSafari || oldNode
+  return this.ignoreComments || this.ignoreTrailingCommas ||
+    this.allowSingleQuotedStrings || this.allowDuplicateObjectKeys === false ||
+    this.mode === 'cjson' || this.mode === 'json5' || isSafari || oldNode
 }
 
 function getReviver (options) {

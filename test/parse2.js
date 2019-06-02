@@ -152,6 +152,11 @@ addTest('[1,\r\n2,\r3,\n]')
 
 assert.throws(parse.bind(null, '{-1:42}', { mode: 'json5' }))
 
+assert.deepEqual(parse('{ "key": 1, "key": 2}'), { key: 2 })
+assert.throws(function () {
+  parse('{ "key": 1, "key": 2}', { allowDuplicateObjectKeys: false })
+})
+
 for (i = 0; i < 100; ++i) {
   var str = '-01.e'.split('')
 

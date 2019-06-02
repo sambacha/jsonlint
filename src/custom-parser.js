@@ -46,6 +46,7 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
   var ignoreComments = options.ignoreComments || options.mode === 'cjson' || json5
   var ignoreTrailingCommas = options.ignoreTrailingCommas || json5
   var allowSingleQuotedStrings = options.allowSingleQuotedStrings || json5
+  var allowDuplicateObjectKeys = options.allowDuplicateObjectKeys
   var reviver = options.reviver
 
   var isLineTerminator = json5 ? Uni.isLineTerminator : Uni.isLineTerminatorJSON
@@ -227,6 +228,9 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
     while (position < inputLength) {
       skipWhiteSpace()
       var key = parseKey()
+      if (allowDuplicateObjectKeys === false && result[key]) {
+        fail('Duplicate key: ' + key)
+      }
       skipWhiteSpace()
 
       var char = input[position++]
