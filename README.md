@@ -45,7 +45,7 @@ Example of an error message:
     Parse error on line 1, column 14:
     {"creative": ?}
     -------------^
-    Unexpected token ?
+    Unexpected token "?"
 
 ## Command-line Interface
 
@@ -198,7 +198,7 @@ The following code logs twice the following message:
     Parse error on line 1, column 14:
     {"creative": ?}
     -------------^
-    Unexpected token ?
+    Unexpected token "?"
 
 ```js
 const { parse } = require('@prantlf/jsonlint')

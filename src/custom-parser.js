@@ -61,13 +61,7 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
   function generateMessage () {
     var message
     if (position < inputLength) {
-      var token = '\'' +
-        JSON
-          .stringify(input[position])
-          .replace(/^"|"$/g, '')
-          .replace(/'/g, "\\'")
-          .replace(/\\"/g, '"') +
-        '\''
+      var token = JSON.stringify(input[position])
       message = 'Unexpected token ' + token
     } else {
       message = 'Unexpected end of input'
@@ -229,7 +223,7 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
       skipWhiteSpace()
       var key = parseKey()
       if (allowDuplicateObjectKeys === false && result[key]) {
-        fail('Duplicate key: ' + key)
+        fail('Duplicate key: "' + key + '"')
       }
       skipWhiteSpace()
 
@@ -246,10 +240,10 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
         var value = parseGeneric()
         stack.pop()
 
-        if (value === undefined) fail('No value found for key ' + key)
+        if (value === undefined) fail('No value found for key "' + key + '"')
         if (typeof key !== 'string') {
           if (!json5 || typeof key !== 'number') {
-            fail('Wrong key type: ' + key)
+            fail('Wrong key type: "' + key + '"')
           }
         }
 

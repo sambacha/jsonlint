@@ -11,7 +11,13 @@ function addTest (arg, row, col, errRegExp) {
     } catch (err) {
       if (row !== undefined) assert.equal(err.location.start.line, row, 'wrong row: ' + err.location.start.line)
       if (col !== undefined) assert.equal(err.location.start.column, col, 'wrong column: ' + err.location.start.column)
-      if (errRegExp) assert(errRegExp.exec(err.message))
+      try {
+        if (errRegExp) assert(errRegExp.exec(err.message))
+      } catch (error) {
+        console.log('Message:', err.message)
+        console.log('RegExp: ', errRegExp)
+        throw error
+      }
       return
     }
     throw Error('no error')
@@ -47,7 +53,7 @@ addTest('nulz', 1, 1)
 
 // no data
 addTest('  ', 1, 3, /No data.*whitespace/)
-addTest('blah', 1, 1, /Unexpected token 'b'/)
+addTest('blah', 1, 1, /Unexpected token "b"/)
 addTest('', 1, 1, /No data.*empty input/)
 
 try {
