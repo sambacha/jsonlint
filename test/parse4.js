@@ -12,21 +12,21 @@ assert.deepEqual(parse('{ "c": 123 }', { mode: 'json5' }), { c: 123 })
 // cjson
 assert.throws(function () {
   parse('{ "c": /* foo */ 123 }', { legacy: true })
-}, /Unexpected token \//)
+}, /(?:Unexpected token "?\/"?)|(?:No value found for key "c")/)
 assert.throws(function () {
   parse('{ "c": /* foo */ 123 }', { mode: 'json' })
-}, /Unexpected token \//)
+}, /(?:Unexpected token "?\/"?)|(?:No value found for key "c")/)
 assert.deepEqual(parse('{ "c": /* foo */ 123 }', { mode: 'cjson' }), { c: 123 })
 assert.deepEqual(parse('{ "c": /* foo */ 123 }', { mode: 'json5' }), { c: 123 })
 
 // json5
 assert.throws(function () {
   parse('{ "c": Infinity }', { legacy: true })
-}, /Unexpected token I/)
+}, /(?:Unexpected token "?I"?)|(?:No value found for key "c")/)
 assert.throws(function () {
   parse('{ "c": Infinity }', { mode: 'json' })
-}, /Unexpected token I/)
+}, /(?:Unexpected token "?I"?)|(?:No value found for key "c")/)
 assert.throws(function () {
   parse('{ "c": Infinity }', { mode: 'cjson' })
-}, /No value found for key c/)
+}, /(?:Unexpected token "?I"?)|(?:No value found for key "c")/)
 assert.deepEqual(parse('{ "c": Infinity }', { mode: 'json5' }), { c: Infinity })
