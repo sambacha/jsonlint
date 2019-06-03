@@ -23,6 +23,13 @@
     }
     #data, #schema, #validate {
       font-size: 100%;
+      border-radius: 0.5ex;
+    }
+    #validate {
+      padding: 1ex;
+      color: white;
+      background-color: darkblue;
+      border: 1px solid darkblue;
     }
     #data, #schema {
       font-family: monospace;
@@ -39,15 +46,19 @@
       flex-basis: calc(50% - 1ex);
       min-width: calc(42ex - 3ex);
     }
-    #options {
+    #options > * {
       display: flex;
       flex-wrap: wrap;
       margin-top: 1ex;
       margin-bottom: 1ex;
     }
-    #options > * {
+    #options > * > * {
       margin-right: 3ex;
       margin-bottom: 1ex;
+    }
+    #options > * > span {
+      display: block;
+      width: 5em;
     }
     #result-section {
       display: none;
@@ -85,32 +96,53 @@
         </div>
         <div id="options">
           <div>
-            <input type="checkbox" checked id="reformat">
-            <label for="reformat">Reformat source</label>
+            <span>Parsing:</span>
+            <div>
+              <input type="checkbox" id="comments">
+              <label for="comments">Ignore comments</label>
+            </div>
+            <div>
+              <input type="checkbox" id="trailing-commas">
+              <label for="trailing-commas">Ignore trailing commas</label>
+            </div>
+            <div>
+              <input type="checkbox" id="single-quoted-strings">
+              <label for="single-quoted-strings">Allow single-quoted strings</label>
+            </div>
+            <div>
+              <input type="checkbox" checked id="duplicate-object-keys">
+              <label for="single-quoted-strings">Allow duplicate object keys</label>
+            </div>
           </div>
           <div>
-            <input type="checkbox" id="sort-object-keys">
-            <label for="sort-object-keys">Sort object keys</label>
+            <span>Formatting:</span>
+            <div>
+              <input type="checkbox" checked id="reformat">
+              <label for="reformat">Reformat source</label>
+            </div>
+            <div>
+              <input type="checkbox" id="sort-object-keys">
+              <label for="sort-object-keys">Sort object keys</label>
+            </div>
           </div>
           <div>
-            <input type="checkbox" id="comments">
-            <label for="comments">Ignore JavaScript-style comments</label>
-          </div>
-          <div>
-            <input type="checkbox" id="trailing-commas">
-            <label for="trailing-commas">Ignore trailing commas</label>
-          </div>
-          <div>
-            <input type="checkbox" id="single-quoted-strings">
-            <label for="single-quoted-strings">Recognize single-quoted strings</label>
-          </div>
-          <div>
-            <input type="checkbox" checked id="duplicate-object-keys">
-            <label for="single-quoted-strings">Allow duplicate object keys</label>
-          </div>
-          <div>
-            <input type="checkbox" id="with-schema">
-            <label for="with-schema">Use schema</label>
+            <span>Standard:</span>
+            <div>
+              <input type="radio" name="mode" checked id="json">
+              <label for="json">JSON</label>
+            </div>
+            <div>
+              <input type="radio" name="mode" id="cjson">
+              <label for="cjson">CJSON</label>
+            </div>
+            <div>
+              <input type="radio" name="mode" id="json5">
+              <label for="json5">JSON5</label>
+            </div>
+            <div>
+              <input type="checkbox" id="with-schema">
+              <label for="with-schema">Use JSON Schema</label>
+            </div>
           </div>
         </div>
         <button id="validate" type="button">Validate</button>
@@ -141,17 +173,32 @@
         }
         document.getElementById('source').className = className
       }
+      document.querySelectorAll('[name=mode]').forEach(function (element) {
+        element.onchange =  function () {
+          var mode = document.querySelector('[name=mode]:checked').id
+          document.getElementById('comments').parentElement.style.display =
+            mode === 'cjson' || mode === 'json5' ? 'none' : 'block'
+          document.getElementById('trailing-commas').parentElement.style.display =
+            mode === 'json5' ? 'none' : 'block'
+          document.getElementById('single-quoted-strings').parentElement.style.display =
+            mode === 'json5' ? 'none' : 'block'
+        }
+      })
       document.getElementById('validate').onclick = function () {
         document.getElementById('result-section').style.display = 'block'
         try {
-          var parser = jsonlint.parser
+          var mode = document.querySelector('[name=mode]:checked').id
           var parserOptions = {
-            ignoreComments: document.getElementById('comments').checked,
-            ignoreTrailingCommas: document.getElementById('trailing-commas').checked,
-            allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked,
+            mode: mode,
+            ignoreComments: document.getElementById('comments').checked ||
+                            mode === 'cjson' || mode === 'json5',
+            ignoreTrailingCommas: document.getElementById('trailing-commas').checked ||
+                                  mode === 'json5',
+            allowSingleQuotedStrings: document.getElementById('single-quoted-strings').checked ||
+                                      mode === 'json5',
             allowDuplicateObjectKeys: document.getElementById('duplicate-object-keys').checked,
           }
-          var parsed = parser.parse(document.getElementById('data').value, parserOptions)
+          var parsed = jsonlint.parse(document.getElementById('data').value, parserOptions)
           if (document.getElementById('with-schema').checked) {
             var schema = document.getElementById('schema').value
             var validate = jsonlintValidator.compile(schema, parserOptions)
