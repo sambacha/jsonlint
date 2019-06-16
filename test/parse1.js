@@ -331,9 +331,7 @@ exports['test schema validation failure'] = function () {
     environment: 'json-schema-draft-04'
   })
   assert['throws'](function () {
-    validate(parse(data, {
-      ignoreComments: !nativeParser
-    }))
+    validate(data, { ignoreComments: !nativeParser })
   }, 'should throw error')
 }
 

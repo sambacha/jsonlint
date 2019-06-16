@@ -15,6 +15,10 @@ var suffix = `
   }
   exports.parseNative = parseNative
   exports.parseCustom = parseCustom
+  exports.tokenize = tokenize
+  exports.getErrorTexts = getTexts
+  exports.pathToPointer = pathToPointer
+  exports.pointerToPath = pointerToPath
   Object.defineProperty(exports, '__esModule', { value: true })
 }));
 `

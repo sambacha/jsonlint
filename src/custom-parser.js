@@ -29,15 +29,7 @@ var unescapeMap = {
   '/': '/'
 }
 
-function parseCustom (input, options) { // eslint-disable-line no-unused-vars
-  if (typeof options === 'function') {
-    options = {
-      reviver: options
-    }
-  } else if (!options) {
-    options = {}
-  }
-
+function parseInternal (input, options) {
   if (typeof input !== 'string' || !(input instanceof String)) {
     input = String(input)
   }
@@ -48,6 +40,10 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
   var allowSingleQuotedStrings = options.allowSingleQuotedStrings || json5
   var allowDuplicateObjectKeys = options.allowDuplicateObjectKeys
   var reviver = options.reviver
+  var tokenize = options.tokenize
+  var rawTokens = options.rawTokens
+  var tokenLocations = options.tokenLocations
+  var tokenPaths = options.tokenPaths
 
   var isLineTerminator = json5 ? Uni.isLineTerminator : Uni.isLineTerminatorJSON
   var isWhiteSpace = json5 ? Uni.isWhiteSpace : Uni.isWhiteSpaceJSON
@@ -56,7 +52,50 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
   var lineNumber = 0
   var lineStart = 0
   var position = 0
-  var stack = []
+
+  var startToken
+  var endToken
+  var tokenPath
+
+  if (tokenize) {
+    var tokens = []
+    var tokenOffset = null
+    var tokenLine
+    var tokenColumn
+    startToken = function () {
+      if (tokenOffset !== null) throw Error('internal error, token overlap')
+      tokenLine = lineNumber + 1
+      tokenColumn = position - lineStart + 1
+      tokenOffset = position
+    }
+    endToken = function (type, value) {
+      if (tokenOffset !== position) {
+        var token = { type: type }
+        if (rawTokens) {
+          token.raw = input.substr(tokenOffset, position - tokenOffset)
+        }
+        if (value !== undefined) {
+          token.value = value
+        }
+        if (tokenLocations) {
+          token.location = {
+            start: {
+              column: tokenColumn,
+              line: tokenLine,
+              offset: tokenOffset
+            }
+          }
+        }
+        if (tokenPaths) {
+          token.path = tokenPath.slice()
+        }
+        tokens.push(token)
+      }
+      tokenOffset = null
+      return value
+    }
+    tokenPaths && (tokenPath = [])
+  }
 
   function generateMessage () {
     var message
@@ -106,27 +145,38 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
 
   function parseGeneric () {
     while (position < inputLength) {
+      startToken && startToken()
       var char = input[position++]
       if (char === '"' || (char === '\'' && allowSingleQuotedStrings)) {
-        return parseString(char)
+        var string = parseString(char)
+        endToken && endToken('literal', string)
+        return string
       } else if (char === '{') {
+        endToken && endToken('symbol', '{')
         return parseObject()
       } else if (char === '[') {
+        endToken && endToken('symbol', '[')
         return parseArray()
       } else if (char === '-' || char === '.' || isDecDigit(char) ||
                  (json5 && (char === '+' || char === 'I' || char === 'N'))) {
-        return parseNumber()
+        var number = parseNumber()
+        endToken && endToken('literal', number)
+        return number
       } else if (char === 'n') {
         parseKeyword('null')
+        endToken && endToken('literal', null)
         return null
       } else if (char === 't') {
         parseKeyword('true')
+        endToken && endToken('literal', true)
         return true
       } else if (char === 'f') {
         parseKeyword('false')
+        endToken && endToken('literal', false)
         return false
       } else {
         --position
+        endToken && endToken()
         return undefined
       }
     }
@@ -135,47 +185,81 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
   function parseKey () {
     var result
     while (position < inputLength) {
+      startToken && startToken()
       var char = input[position++]
       if (char === '"' || (char === '\'' && allowSingleQuotedStrings)) {
-        return parseString(char)
+        var string = parseString(char)
+        endToken && endToken('literal', string)
+        return string
       } else if (char === '{') {
+        endToken && endToken('symbol', '{')
         return parseObject()
       } else if (char === '[') {
+        endToken && endToken('symbol', '[')
         return parseArray()
       } else if (char === '.' || isDecDigit(char)) {
-        return parseNumber(true)
+        var number = parseNumber(true)
+        endToken && endToken('literal', number)
+        return number
       } else if ((json5 && Uni.isIdentifierStart(char)) ||
                  (char === '\\' && input[position] === 'u')) {
         var rollback = position - 1
         result = parseIdentifier()
         if (result === undefined) {
           position = rollback
+          endToken && endToken()
           return undefined
         } else {
+          endToken && endToken('literal', result)
           return result
         }
       } else {
         --position
+        endToken && endToken()
         return undefined
       }
     }
   }
 
   function skipWhiteSpace () {
+    var insideWhiteSpace
+    function startWhiteSpace () {
+      if (!insideWhiteSpace) {
+        insideWhiteSpace = true
+        --position
+        startToken()
+        ++position
+      }
+    }
+    function endWhiteSpace () {
+      if (insideWhiteSpace) {
+        insideWhiteSpace = false
+        endToken('whitespace')
+      }
+    }
     while (position < inputLength) {
       var char = input[position++]
       if (isLineTerminator(char)) {
+        startToken && startWhiteSpace()
         newLine(char)
       } else if (isWhiteSpace(char)) {
-        // nothing
+        startToken && startWhiteSpace()
       } else if (char === '/' && ignoreComments &&
                  (input[position] === '/' || input[position] === '*')) {
+        if (startToken) {
+          --position
+          endWhiteSpace()
+          startToken()
+          ++position
+        }
         skipComment(input[position++] === '*')
+        endToken && endToken('comment')
       } else {
         --position
         break
       }
     }
+    endToken && endWhiteSpace()
   }
 
   function skipComment (multiLine) {
@@ -226,8 +310,9 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
         fail('Duplicate key: "' + key + '"')
       }
       skipWhiteSpace()
-
+      startToken && startToken()
       var char = input[position++]
+      endToken && endToken('symbol', char)
       if (char === '}' && key === undefined) {
         if (!ignoreTrailingCommas && isNotEmpty) {
           --position
@@ -236,9 +321,9 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
         return result
       } else if (char === ':' && key !== undefined) {
         skipWhiteSpace()
-        stack.push(key)
+        tokenPath && tokenPath.push(key)
         var value = parseGeneric()
-        stack.pop()
+        tokenPath && tokenPath.pop()
 
         if (value === undefined) fail('No value found for key "' + key + '"')
         if (typeof key !== 'string') {
@@ -260,7 +345,9 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
         }
 
         skipWhiteSpace()
+        startToken && startToken()
         char = input[position++]
+        endToken && endToken('symbol', char)
         if (char === ',') {
           continue
         } else if (char === '}') {
@@ -281,12 +368,13 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
     var result = []
     while (position < inputLength) {
       skipWhiteSpace()
-      stack.push(result.length)
+      tokenPath && tokenPath.push(result.length)
       var item = parseGeneric()
-      stack.pop()
+      tokenPath && tokenPath.pop()
       skipWhiteSpace()
-
+      startToken && startToken()
       var char = input[position++]
+      endToken && endToken('symbol', char)
       if (item !== undefined) {
         if (reviver) {
           item = reviver(String(result.length), item)
@@ -535,7 +623,7 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
       if (reviver) {
         returnValue = reviver('', returnValue)
       }
-      return returnValue
+      return tokenize ? tokens : returnValue
     } else {
       fail()
     }
@@ -546,4 +634,58 @@ function parseCustom (input, options) { // eslint-disable-line no-unused-vars
       fail('No data, empty input')
     }
   }
+}
+
+function parseCustom (input, options) { // eslint-disable-line no-unused-vars
+  if (typeof options === 'function') {
+    options = {
+      reviver: options
+    }
+  } else if (!options) {
+    options = {}
+  }
+  return parseInternal(input, options)
+}
+
+function tokenize (input, options) { // eslint-disable-line no-unused-vars
+  if (!options) {
+    options = {}
+  }
+  options.tokenize = true
+  return parseInternal(input, options)
+}
+
+function escapePointerToken (token) {
+  return token
+    .toString()
+    .replace(/~/g, '~0')
+    .replace(/\//g, '~1')
+}
+
+function pathToPointer (tokens) { // eslint-disable-line no-unused-vars
+  if (tokens.length === 0) {
+    return ''
+  }
+  return '/' + tokens
+    .map(escapePointerToken)
+    .join('/')
+}
+
+function unescapePointerToken (token) {
+  return token
+    .replace(/~1/g, '/')
+    .replace(/~0/g, '~')
+}
+
+function pointerToPath (pointer) { // eslint-disable-line no-unused-vars
+  if (pointer === '') {
+    return []
+  }
+  if (pointer[0] !== '/') {
+    throw new Error('Missing initial "/" in the reference')
+  }
+  return pointer
+    .substr(1)
+    .split('/')
+    .map(unescapePointerToken)
 }
