@@ -6,8 +6,6 @@ var path = require('path')
 var assert = require('assert')
 
 var exported = require('../lib/jsonlint')
-var Parser = exported.Parser
-var parser = exported.parser
 var parse = exported.parse
 var validator = require('../lib/validator')
 
@@ -32,61 +30,21 @@ function checkErrorInformation (error) {
 if (!nativeParser) {
   exports['test exported interface'] = function () {
     assert.equal(typeof parse, 'function')
-    assert.equal(typeof parser, 'object')
-    assert.equal(typeof Parser, 'function')
-    assert.equal(typeof Parser.prototype, 'object')
-    assert.equal(Object.getPrototypeOf(parser), Parser.prototype)
-    assert.equal(Parser.prototype.constructor, Parser)
   }
 
   exports['test function'] = function () {
     var json = '{"foo": "bar"}'
     assert.deepEqual(parse(json), { 'foo': 'bar' })
   }
+}
 
-  exports['test function object'] = function () {
-    var json = '{"foo": "bar"}'
-    var parser = new Parser()
-    assert.deepEqual(parser.parse(json), { 'foo': 'bar' })
-  }
-
-  exports['test context cleanup'] = function () {
-    var json = '{"foo": "bar"}'
-    assert.equal(Object.keys(parser).length, 0)
-    assert.deepEqual(parse(json, { ignoreComments: true }), { 'foo': 'bar' })
-    assert.equal(Object.keys(parser).length, 0)
-  }
-
-  exports['test context restoration'] = function () {
-    var json = '{"foo": "bar"}'
-    var parser = new Parser({
-      ignoreComments: false
-    })
-    assert.deepEqual(parse(json, { ignoreComments: true }), { 'foo': 'bar' })
-    assert.equal(parser.ignoreComments, false)
-  }
-
-  exports['test limited error information'] = function () {
-    var json = '{"foo": ?}'
-    var parser = new Parser({
-      ignoreComments: true
-    })
-    try {
-      parser.parse(json)
-      assert.fail()
-    } catch (error) {
-      checkErrorInformation(error)
-    }
-  }
-} else {
-  exports['test limited error information'] = function () {
-    var json = '{"foo": ?}'
-    try {
-      parse(json)
-      assert.fail()
-    } catch (error) {
-      checkErrorInformation(error)
-    }
+exports['test limited error information'] = function () {
+  var json = '{"foo": ?}'
+  try {
+    parse(json)
+    assert.fail()
+  } catch (error) {
+    checkErrorInformation(error)
   }
 }
 

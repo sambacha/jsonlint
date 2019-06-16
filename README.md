@@ -21,9 +21,11 @@ This is a fork of the original package with the following enhancements:
 * Reports errors with rich additional information. From the schema validation too.
 * Implements JavaScript modules using [UMD] to work everywhere.
 * Depends on up-to-date npm modules with no installation warnings.
-* Small size - 19.4 kB minified, 6.7 kB gzipped.
+* Small size - 18.2 kB minified, 6.3 kB gzipped.
 
-Integration to the favourite task loaders is provided by the following NPM modules:
+**Note:** In comparison with the original project, this package exports only the `parse` method; not the `Parser` object.
+
+Integration to the favourite task loaders for JSON file validation is provided by the following NPM modules:
 
 * [`Grunt`] - see [`@prantlf/grunt-jsonlint`]
 * [`Gulp`] - see [`@prantlf/gulp-jsonlint`]
