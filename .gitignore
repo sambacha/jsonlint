@@ -3,5 +3,6 @@ benchmarks/jison/*.js
 benchmarks/pegjs/*.js
 coverage
 node_modules
-jsonlint*.js
+lib/jsonlint*.js
+lib/schema-drafts.js
 web/*.min.*
