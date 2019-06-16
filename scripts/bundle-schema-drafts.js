@@ -16,9 +16,11 @@ var environments = [
   'json-schema-draft-06',
   'json-schema-draft-07'
 ]
-var source = environments.map(function (environment) {
+var input = environments.map(function (environment) {
   var file = path.join(__dirname, '../node_modules/ajv/lib/refs/' + environment + '.json')
   var code = fs.readFileSync(file)
   return 'exports["' + environment + '"] = ' + code
 })
-console.log(prefix + source.join('\n') + suffix)
+var output = prefix + input.join('\n') + suffix
+var file = path.join(__dirname, '../lib/schema-drafts.js')
+fs.writeFileSync(file, output)
