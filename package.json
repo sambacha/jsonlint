@@ -38,7 +38,7 @@
     "test": "nyc --silent node test/parse1 && nyc --silent --no-clean node test/parse1 --native-parser && nyc --silent --no-clean node test/parse2 && nyc --silent --no-clean node test/parse3 && nyc --silent --no-clean node test/parse4 && nyc --silent --no-clean node test/parse5 && nyc --silent --no-clean node test/portable && nyc --silent --no-clean node lib/cli package.json test/recursive && nyc --silent --no-clean node lib/cli -sq test/passes/hasOwnProperty.json && nyc --silent --no-clean node lib/cli -s -e json-schema-draft-04 -V test/passes/3.schema.json test/passes/3.json && nyc --silent --no-clean node lib/cli -C test/passes/comments.txt && nyc --silent --no-clean node lib/cli -S test/passes/strings.txt && nyc --silent --no-clean node lib/cli -M json5 test/passes/json5.text && nyc --silent --no-clean node lib/cli -v && nyc --silent --no-clean node lib/cli -h && nyc --silent --no-clean node lib/cli -pc test/fails/10.json || nyc report",
     "test:old": "node test/parse1 && node test/parse1 --native-parser && node test/parse2 && node test/parse3 && node test/parse4 && node test/parse5 && node test/portable && node lib/cli package.json test/recursive && node lib/cli -sq test/passes/hasOwnProperty.json && node lib/cli -s -e json-schema-draft-04 -V test/passes/3.schema.json test/passes/3.json && node lib/cli -C test/passes/comments.txt && node lib/cli -S test/passes/strings.txt && node lib/cli -M json5 test/passes/json5.text && node lib/cli -v && node lib/cli -h",
     "coverage": "cat coverage/lcov.info | npx coveralls",
-    "start": "python -m SimpleHTTPServer",
+    "start": "http-server -c 5",
     "web": "npm run web:sync && npm run web:deploy",
     "web:clone": "test ! -d ../jsonlint-pages && git clone --single-branch --branch gh-pages `git remote get-url origin` ../jsonlint-pages",
     "web:pull": "cd ../jsonlint-pages && git pull",
@@ -67,6 +67,7 @@
     "commander": "2.20.0"
   },
   "devDependencies": {
+    "http-server": "0.11.1",
     "js-yaml": "3.13.1",
     "nyc": "14.1.1",
     "standard": "12.0.1",
