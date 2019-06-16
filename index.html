@@ -198,11 +198,14 @@
                                       mode === 'json5',
             allowDuplicateObjectKeys: document.getElementById('duplicate-object-keys').checked,
           }
-          var parsed = jsonlint.parse(document.getElementById('data').value, parserOptions)
+          var source = document.getElementById('data').value
+          var parsed
           if (document.getElementById('with-schema').checked) {
             var schema = document.getElementById('schema').value
             var validate = jsonlintValidator.compile(schema, parserOptions)
-            validate(parsed)
+            parsed = validate(source, parserOptions)
+          } else {
+            parsed = jsonlint.parse(source, parserOptions)
           }
           document.getElementById('result').innerText = 'Data is valid!'
           document.getElementById('result').className = 'pass'
