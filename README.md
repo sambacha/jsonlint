@@ -239,7 +239,7 @@ Licensed under the MIT license.
 [`Gulp`]: http://gulpjs.com/
 [`@prantlf/grunt-jsonlint`]: https://www.npmjs.com/package/@prantlf/grunt-jsonlint
 [`@prantlf/gulp-jsonlint`]: https://www.npmjs.com/package/@prantlf/gulp-jsonlint
-[best performance]: ./benchmarks#json-parser-comparison
+[7x faster than the custom parser]: ./benchmarks/results/performance.md#results
 [parser benchmark]: ./benchmarks#json-parser-comparison
 [a lot slower]: ./benchmarks/results/performance.md#results
 [clear error reporting]: ./benchmarks/results/errorReportingQuality.md#results
