@@ -97,38 +97,29 @@ function parse (input, options) {
 
   var stack = []
 
-  var tokenStart = function () {}
-  var tokenEnd = function (v) { return v }
+  var startToken = function () {}
+  var endToken = function (v) { return v }
 
-  /* tokenize({
-       raw: '...',
-       type: 'whitespace'|'comment'|'key'|'literal'|'separator'|'newline',
-       value: 'number'|'string'|'whatever',
-       path: [...],
-     })
-  */
-  if (options._tokenize) {
-    ;(function () {
-      var start = null
-      tokenStart = function () {
-        if (start !== null) throw Error('internal error, token overlap')
-        start = position
-      }
-
-      tokenEnd = function (v, type) {
-        if (start !== position) {
-          var hash = {
-            raw: input.substr(start, position - start),
-            type: type,
-            stack: stack.slice(0)
-          }
-          if (v !== undefined) hash.value = v
-          options._tokenize.call(null, hash)
+  var tokenize = options.tokenize
+  if (tokenize) {
+    var tokenStart = null
+    startToken = function () {
+      if (tokenStart !== null) throw Error('internal error, token overlap')
+      tokenStart = position
+    }
+    endToken = function (v, type) {
+      if (tokenStart !== position) {
+        var hash = {
+          raw: input.substr(tokenStart, position - tokenStart),
+          type: type,
+          stack: stack.slice(0)
         }
-        start = null
-        return v
+        if (v !== undefined) hash.value = v
+        tokenize(hash)
       }
-    })()
+      tokenStart = null
+      return v
+    }
   }
 
   function fail (message) {
@@ -165,16 +156,16 @@ function parse (input, options) {
 
   function parseGeneric () {
     while (position < length) {
-      tokenStart()
+      startToken()
       var chr = input[position++]
 
       if (chr === '"' || (chr === '\'' && json5)) {
-        return tokenEnd(parseString(chr), 'literal')
+        return endToken(parseString(chr), 'literal')
       } else if (chr === '{') {
-        tokenEnd(undefined, 'separator')
+        endToken(undefined, 'separator')
         return parseObject()
       } else if (chr === '[') {
-        tokenEnd(undefined, 'separator')
+        endToken(undefined, 'separator')
         return parseArray()
       } else if (chr === '-' ||
              chr === '.' ||
@@ -182,19 +173,19 @@ function parse (input, options) {
       //           + number       Infinity          NaN
              (json5 && (chr === '+' || chr === 'I' || chr === 'N'))
       ) {
-        return tokenEnd(parseNumber(), 'literal')
+        return endToken(parseNumber(), 'literal')
       } else if (chr === 'n') {
         parseKeyword('null')
-        return tokenEnd(null, 'literal')
+        return endToken(null, 'literal')
       } else if (chr === 't') {
         parseKeyword('true')
-        return tokenEnd(true, 'literal')
+        return endToken(true, 'literal')
       } else if (chr === 'f') {
         parseKeyword('false')
-        return tokenEnd(false, 'literal')
+        return endToken(false, 'literal')
       } else {
         position--
-        return tokenEnd(undefined)
+        return endToken(undefined)
       }
     }
   }
@@ -203,20 +194,20 @@ function parse (input, options) {
     var result
 
     while (position < length) {
-      tokenStart()
+      startToken()
       var chr = input[position++]
 
       if (chr === '"' || (chr === '\'' && json5)) {
-        return tokenEnd(parseString(chr), 'key')
+        return endToken(parseString(chr), 'key')
       } else if (chr === '{') {
-        tokenEnd(undefined, 'separator')
+        endToken(undefined, 'separator')
         return parseObject()
       } else if (chr === '[') {
-        tokenEnd(undefined, 'separator')
+        endToken(undefined, 'separator')
         return parseArray()
       } else if (chr === '.' || isDecDigit(chr)
       ) {
-        return tokenEnd(parseNumber(true), 'key')
+        return endToken(parseNumber(true), 'key')
       } else if ((json5 && Uni.isIdentifierStart(chr)) ||
                  (chr === '\\' && input[position] === 'u')) {
         // unicode char or a unicode sequence
@@ -225,30 +216,30 @@ function parse (input, options) {
 
         if (result === undefined) {
           position = rollback
-          return tokenEnd(undefined)
+          return endToken(undefined)
         } else {
-          return tokenEnd(result, 'key')
+          return endToken(result, 'key')
         }
       } else {
         position--
-        return tokenEnd(undefined)
+        return endToken(undefined)
       }
     }
   }
 
   function skipWhiteSpace () {
-    tokenStart()
+    startToken()
     while (position < length) {
       var chr = input[position++]
 
       if (isLineTerminator(chr)) {
         position--
-        tokenEnd(undefined, 'whitespace')
-        tokenStart()
+        endToken(undefined, 'whitespace')
+        startToken()
         position++
         newLine(chr)
-        tokenEnd(undefined, 'newline')
-        tokenStart()
+        endToken(undefined, 'newline')
+        startToken()
       } else if (isWhiteSpace(chr)) {
         // nothing
 
@@ -257,18 +248,18 @@ function parse (input, options) {
              (input[position] === '/' || input[position] === '*')
       ) {
         position--
-        tokenEnd(undefined, 'whitespace')
-        tokenStart()
+        endToken(undefined, 'whitespace')
+        startToken()
         position++
         skipComment(input[position++] === '*')
-        tokenEnd(undefined, 'comment')
-        tokenStart()
+        endToken(undefined, 'comment')
+        startToken()
       } else {
         position--
         break
       }
     }
-    return tokenEnd(undefined, 'whitespace')
+    return endToken(undefined, 'whitespace')
   }
 
   function skipComment (multi) {
@@ -322,9 +313,9 @@ function parse (input, options) {
       skipWhiteSpace()
       var key = parseKey()
       skipWhiteSpace()
-      tokenStart()
+      startToken()
       var chr = input[position++]
-      tokenEnd(undefined, 'separator')
+      endToken(undefined, 'separator')
 
       if (chr === '}' && key === undefined) {
         if (!json5 && isNotEmpty) {
@@ -369,9 +360,9 @@ function parse (input, options) {
 
         skipWhiteSpace()
 
-        tokenStart()
+        startToken()
         chr = input[position++]
-        tokenEnd(undefined, 'separator')
+        endToken(undefined, 'separator')
 
         if (chr === ',') {
           continue
@@ -398,9 +389,9 @@ function parse (input, options) {
       var item = parseGeneric()
       stack.pop()
       skipWhiteSpace()
-      tokenStart()
+      startToken()
       var chr = input[position++]
-      tokenEnd(undefined, 'separator')
+      endToken(undefined, 'separator')
 
       if (item !== undefined) {
         if (typeof (options.reviver) === 'function') {
@@ -713,7 +704,7 @@ exports.parse = function parseJSON (input, options) {
 exports.tokenize = function tokenizeJSON (input, options) {
   if (options == null) options = {}
 
-  options._tokenize = function (smth) {
+  options.tokenize = function (smth) {
     if (options._addstack) smth.stack.unshift.apply(smth.stack, options._addstack)
     tokens.push(smth)
   }

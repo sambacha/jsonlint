@@ -27,19 +27,22 @@ Results
 
 This is a result of the [benchmark] run by `npm run benchmarks`. The numbers should be understood as relative ones:
 
-    Parsing JSON data 4673 characters long using:
-      the built-in parser x 61,588 ops/sec ±0.75% (80 runs sampled)
-      the pure chevrotain parser x 14,034 ops/sec ±0.86% (85 runs sampled)
-      the extended chevrotain parser x 12,802 ops/sec ±1.20% (86 runs sampled)
-      the pure hand-built parser x 9,479 ops/sec ±0.83% (89 runs sampled)
-      the extended hand-built parser x 9,339 ops/sec ±1.38% (86 runs sampled)
-      the pure jju parser x 11,396 ops/sec ±1.05% (86 runs sampled)
-      the extended jju parser x 8,221 ops/sec ±0.99% (87 runs sampled)
-      the pure pegjs parser x 2,854 ops/sec ±0.80% (87 runs sampled)
-      the extended pegjs parser x 2,619 ops/sec ±1.08% (89 runs sampled)
-      the pure jison parser x 2,516 ops/sec ±1.31% (84 runs sampled)
-      the extended jison parser x 2,434 ops/sec ±0.74% (89 runs sampled)
-      the JSON5 parser x 2,002 ops/sec ±0.54% (90 runs sampled)
+    Parsing JSON data 4479 characters long using:
+      the built-in parser x 67,113 ops/sec ±0.79% (89 runs sampled)
+      the pure chevrotain parser x 15,446 ops/sec ±1.30% (90 runs sampled)
+      the extended chevrotain parser x 14,168 ops/sec ±1.23% (88 runs sampled)
+      the pure hand-built parser x 9,755 ops/sec ±0.92% (89 runs sampled)
+      the extended hand-built parser x 9,633 ops/sec ±1.13% (88 runs sampled)
+      the AST parser x 9,768 ops/sec ±0.83% (89 runs sampled)
+      the pure jju parser x 10,178 ops/sec ±0.97% (84 runs sampled)
+      the extended jju parser x 10,204 ops/sec ±1.13% (88 runs sampled)
+      the tokenisable jju parser x 8,904 ops/sec ±1.01% (88 runs sampled)
+      the tokenising jju parser x 6,750 ops/sec ±0.97% (88 runs sampled)
+      the pure pegjs parser x 3,083 ops/sec ±0.95% (89 runs sampled)
+      the extended pegjs parser x 2,786 ops/sec ±1.12% (89 runs sampled)
+      the pure jison parser x 3,033 ops/sec ±1.19% (88 runs sampled)
+      the extended jison parser x 2,810 ops/sec ±0.65% (88 runs sampled)
+      the JSON5 parser x 2,085 ops/sec ±0.45% (91 runs sampled)
     The fastest one was the built-in parser.
 
 I looked further at capabilities and licenses of the parsers.
@@ -68,12 +71,20 @@ I looked further at capabilities and licenses of the parsers.
 * Error reporting would need to be improved.
 * The license (Apache 2) is not compatible with JSONLint.
 
+[AST]
+-----
+
+* Very fast one.
+* Generates an AST to analyse the JSON input.
+* Does not return JSON data without an additional generator using the AST.
+
 [JJU]
 -----
 
 * A part of other utilities to work with JSON/JSON5 documents.
 * Very fast one.
 * Supports `reviver` for the full compatibility with JSON.parse.
+* Can generate tokens to analyse, modify and update the original JSON input.
 
 [PEG.JS]
 --------
@@ -101,6 +112,7 @@ I looked further at capabilities and licenses of the parsers.
 [Chevrotain]: https://github.com/SAP/chevrotain
 [Hand-built]: https://github.com/sap/chevrotain/blob/gh-pages/performance/jsonParsers/handbuilt/handbuilt.js
 [JJU]: http://rlidwka.github.io/jju/
+[AST]: https://github.com/vtrushin/json-to-ast
 [PEG.JS]: http://pegjs.org/
 [Jison]: http://zaach.github.io/jison/
 [JSON5]: https://json5.org/

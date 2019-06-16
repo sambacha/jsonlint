@@ -8,10 +8,12 @@ const { Parser: JisonParser } = require('./jison/pure').parser
 const { Parser: JisonExtendedParser } = require('./jison/extended').parser
 const { parse: jjuPureParse } = require('./jju/pure')
 const { parse: jjuExtendedParse } = require('./jju/extended')
+const { parse: jjuTokenisingParse } = require('./jju/tokenizing')
 const jisonParser = new JisonParser()
 const jisonExtendedParser = new JisonExtendedParser()
 const handbuiltParse = require('./hand-built/pure')
 const handbuiltExtendedParse = require('./hand-built/pure')
+const astParse = require('json-to-ast')
 const JSON5 = require('json5')
 
 const pkg = require('../package')
@@ -45,6 +47,17 @@ function parseExtendedJju () {
   jjuExtendedParse(input, { json5: true })
 }
 
+function parseTokenisableJju () {
+  jjuTokenisingParse(input, { json5: true })
+}
+
+function parseTokenisingJju () {
+  jjuTokenisingParse(input, {
+    tokenize: true,
+    json5: true
+  })
+}
+
 function parsePurePegjs () {
   pegjsParse(input)
 }
@@ -65,14 +78,23 @@ function parseJSON5 () {
   JSON5.parse(input)
 }
 
+function parseAST () {
+  astParse(input, {
+    loc: true
+  })
+}
+
 createSuite(`Parsing JSON data ${input.length} characters long using`)
   .add('the built-in parser', parseBuiltIn)
   .add('the pure chevrotain parser', parsePureChevrotain)
   .add('the extended chevrotain parser', parseExtendedChevrotain)
   .add('the pure hand-built parser', parseHandbuilt)
   .add('the extended hand-built parser', parseExtendedHandbuilt)
+  .add('the AST parser', parseAST)
   .add('the pure jju parser', parsePureJju)
   .add('the extended jju parser', parseExtendedJju)
+  .add('the tokenisable jju parser', parseTokenisableJju)
+  .add('the tokenising jju parser', parseTokenisingJju)
   .add('the pure pegjs parser', parsePurePegjs)
   .add('the extended pegjs parser', parseExtendedPegjs)
   .add('the pure jison parser', parsePureJison)

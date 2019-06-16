@@ -6,8 +6,9 @@
   },
   "devDependencies": {
     "benchmark": "2.1.4",
-    "chevrotain": "4.5.0",
+    "chevrotain": "4.8.0",
     "jison": "0.4.18",
+    "json-to-ast": "2.1.0",
     "json5": "2.1.0",
     "pegjs": "0.10.0"
   }
