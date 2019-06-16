@@ -17,10 +17,11 @@ This is a fork of the original package with the following enhancements:
 * Optionally recognizes JavaScript-style comments and single quoted strings.
 * Optionally ignores trailing commas and reports duplicate object keys as an error.
 * Supports [JSON Schema] drafts 04, 06 and 07.
-* Prefers the native JSON parser to gain the [best performance], while showing error messages of the same quality.
+* Prefers the native JSON parser if possible to run [7x faster than the custom parser].
+* Reports errors with rich additional information. From the schema validation too.
 * Implements JavaScript modules using [UMD] to work everywhere.
 * Depends on up-to-date npm modules with no installation warnings.
-* Small size - 17.6 kB minified, 6.1 kB gzipped.
+* Small size - 19.4 kB minified, 6.7 kB gzipped.
 
 Integration to the favourite task loaders is provided by the following NPM modules:
 
@@ -121,6 +122,8 @@ const data3 = parse("{'creative': true /* for creativity */}", {
 })
 ```
 
+Have a look at the [source] of the [on-line page] to see how to use `jsonlint` on web page.
+
 The exported `parse` method is compatible with the native `JSON.parse` method. The second parameter provides the additional functionality:
 
     parse(input, [reviver|options])
@@ -151,17 +154,16 @@ The `mode` parameter (string) sets parsing options to match a common format of i
 
 ### Schema Validation
 
-The parsing method returns the parsed object or throws an error. If the parsing succeeds, you can validate the input against a JSON schema using the `lib/validator` module:
+You can validate the input against a JSON schema using the `lib/validator` module. The `validate` method accepts either an earlier parsed JSON data or a string with the JSON input:
 
 ```js
-const { parse } = require('@prantlf/jsonlint')
 const { compile } = require('@prantlf/jsonlint/lib/validator')
 const validate = compile('string with JSON schema')
 // Throws an error in case of failure.
-validate(parse('string with JSON data'))
+const parsed = validate('string with JSON data')
 ```
 
-Compiling JSON schema supports the same options as parsing JSON data (except for `reviver`). They can be passed as the second (object) parameter. The optional second `environment` parameter can be passed either as a string or as an additional property in the options object too:
+If a string is passed to the `validate` method, the same options as for parsing JSON data can be passed as the second parameter. Compiling JSON schema supports the same options as parsing JSON data too (except for `reviver`). They can be passed as the second (object) parameter. The optional second `environment` parameter can be passed either as a string or as an additional property in the options object too:
 
 ```js
 const validate = compile('string with JSON schema', {
@@ -173,11 +175,13 @@ const validate = compile('string with JSON schema', {
 
 This is a part of an output from the [parser benchmark], when parsing a 4.2 KB formatted string ([package.json](./package.json)) with Node.js 10.15.3:
 
-    the built-in parser x 61,588 ops/sec ±0.75% (80 runs sampled)
-    the pure jju parser x 11,396 ops/sec ±1.05% (86 runs sampled)
-    the extended jju parser x 8,221 ops/sec ±0.99% (87 runs sampled)
+    the built-in parser x 68,212 ops/sec ±0.86% (87 runs sampled)
+    the pure jju parser x 10,234 ops/sec ±1.08% (89 runs sampled)
+    the extended jju parser x 10,210 ops/sec ±1.26% (88 runs sampled)
+    the tokenisable jju parser x 8,832 ops/sec ±0.92% (89 runs sampled)
+    the tokenising jju parser x 7,911 ops/sec ±1.05% (86 runs sampled)
 
-A custom JSON parser is [a lot slower] than the built-in one. However, it is more important to have a [clear error reporting] than the highest speed in scenarios like parsing configuration files. Extending the parser with the support for comments and single-quoted strings does not affect significantly the performance.
+A custom JSON parser is [a lot slower] than the built-in one. However, it is more important to have a [clear error reporting] than the highest speed in scenarios like parsing configuration files. Extending the parser with the support for comments and single-quoted strings does not affect the performance. Making the parser collect tokens and their locations decreases the performance a bit.
 
 ### Error Handling
 
@@ -237,3 +241,5 @@ Licensed under the MIT license.
 [parser benchmark]: ./benchmarks#json-parser-comparison
 [a lot slower]: ./benchmarks/results/performance.md#results
 [clear error reporting]: ./benchmarks/results/errorReportingQuality.md#results
+[on-line page]: http://prantlf.github.com/jsonlint/
+[source]: ./web/jsonhint.html
