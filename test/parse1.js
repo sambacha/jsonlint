@@ -259,6 +259,22 @@ exports['test extra brace'] = function () {
   assert['throws'](function () { parse(json) }, 'should throw error')
 }
 
+exports['test error location with Windows line breaks'] = function () {
+  var json = '{\r\n"foo": {\r\n      "bar":\r\n    }\r\n  \r\n  }'
+  try {
+    parse(json)
+    assert.fail('should throw error')
+  } catch (error) {
+    assert.equal(error.exzerpt, '...      "bar":    }    }')
+    assert.equal(error.pointer, '-------------------^')
+    assert.equal(error.reason, 'Unexpected token }')
+    assert.equal(error.message, 'Parse error on line 4, column 5:\n...      "bar":    }    }\n-------------------^\nUnexpected token }')
+    assert.deepEqual(error.location, {
+      start: { column: 5, line: 4, offset: 31 }
+    })
+  }
+}
+
 exports['test pass-1'] = function () {
   var json = fs.readFileSync(path.join(__dirname, '/passes/1.json')).toString()
   assert.doesNotThrow(function () { parse(json) }, 'should pass')
