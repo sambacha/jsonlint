@@ -13,7 +13,7 @@ function getLineAndColumn (input, offset) {
 function pastInput (input, offset) {
   var start = Math.max(0, offset - 20)
   var previous = input.substr(start, offset - start)
-  return (offset > 20 ? '...' : '') + previous.replace(/\n/g, '')
+  return (offset > 20 ? '...' : '') + previous.replace(/\r?\n/g, '')
 }
 
 function upcomingInput (input, offset) {
@@ -21,7 +21,7 @@ function upcomingInput (input, offset) {
   start += offset - start
   var rest = input.length - start
   var next = input.substr(start, Math.min(20, rest))
-  return next.replace(/\n/g, '') + (rest > 20 ? '...' : '')
+  return next.replace(/\r?\n/g, '') + (rest > 20 ? '...' : '')
 }
 
 function getPositionContext (input, offset) {
