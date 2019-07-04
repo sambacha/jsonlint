@@ -27,15 +27,13 @@ function checkErrorInformation (error) {
   }
 }
 
-if (!nativeParser) {
-  exports['test exported interface'] = function () {
-    assert.equal(typeof parse, 'function')
-  }
+exports['test exported interface'] = function () {
+  assert.equal(typeof parse, 'function')
+}
 
-  exports['test function'] = function () {
-    var json = '{"foo": "bar"}'
-    assert.deepEqual(parse(json), { 'foo': 'bar' })
-  }
+exports['test function'] = function () {
+  var json = '{"foo": "bar"}'
+  assert.deepEqual(parse(json), { 'foo': 'bar' })
 }
 
 exports['test limited error information'] = function () {
@@ -259,19 +257,37 @@ exports['test extra brace'] = function () {
   assert['throws'](function () { parse(json) }, 'should throw error')
 }
 
-exports['test error location with Windows line breaks'] = function () {
+if (!oldNode) {
+  exports['test error location with Windows line breaks using the native parser'] = function () {
+    var json = '{\r\n"foo": {\r\n      "bar":\r\n    }\r\n  \r\n  }'
+    try {
+      exported.parseNative(json)
+      assert.fail('should throw error')
+    } catch (error) {
+      assert.equal(error.exzerpt, '...      "bar":    }    }')
+      assert.equal(error.pointer, '-------------------^')
+      assert.equal(error.reason, 'Unexpected token }')
+      assert.deepEqual(error.location, {
+        start: { column: 5, line: 4, offset: 31 }
+      })
+      assert.equal(error.message, 'Parse error on line 4, column 5:\n...      "bar":    }    }\n-------------------^\nUnexpected token }')
+    }
+  }
+}
+
+exports['test error location with Windows line breaks using the custom parser'] = function () {
   var json = '{\r\n"foo": {\r\n      "bar":\r\n    }\r\n  \r\n  }'
   try {
-    parse(json)
+    exported.parseCustom(json)
     assert.fail('should throw error')
   } catch (error) {
     assert.equal(error.exzerpt, '...      "bar":    }    }')
     assert.equal(error.pointer, '-------------------^')
-    assert.equal(error.reason, 'Unexpected token }')
-    assert.equal(error.message, 'Parse error on line 4, column 5:\n...      "bar":    }    }\n-------------------^\nUnexpected token }')
+    assert.equal(error.reason, 'No value found for key "bar"')
     assert.deepEqual(error.location, {
       start: { column: 5, line: 4, offset: 31 }
     })
+    assert.equal(error.message, 'Parse error on line 4, column 5:\n...      "bar":    }    }\n-------------------^\nNo value found for key "bar"')
   }
 }
 
