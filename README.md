@@ -145,6 +145,7 @@ The `parse` method offers more detailed [error information](#error-handling), th
 | `allowSingleQuotedStrings` | accepts strings delimited by single-quotes too (boolean) |
 | `allowDuplicateObjectKeys` | allows reporting duplicate object keys as an error (boolean) |
 | `mode`                     | sets multiple options according to the type of input data (string) |
+| `reviver`                  | converts object and array values (function) |
 
 The `mode` parameter (string) sets parsing options to match a common format of input data:
 
@@ -244,4 +245,4 @@ Licensed under the MIT license.
 [a lot slower]: ./benchmarks/results/performance.md#results
 [clear error reporting]: ./benchmarks/results/errorReportingQuality.md#results
 [on-line page]: http://prantlf.github.com/jsonlint/
-[source]: ./web/jsonhint.html
+[source]: ./web/jsonlint.html
