@@ -31,8 +31,8 @@ const inputSources = [
 }`,
   `{
   "property": "value"`,
-  ` `,
-  ``
+  ' ',
+  ''
 ]
 let inputSource
 
@@ -226,7 +226,7 @@ function parseJSON5 () {
   }
 }
 
-for (let test of inputSources) {
+for (const test of inputSources) {
   inputSource = test
   const formattedTest = test
     .split(/\r?\n/)

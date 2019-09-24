@@ -46,16 +46,16 @@ function addDataTest (input, tokens) {
 addDataTest('123', [{ type: 'literal', raw: '123', value: 123 }])
 
 addDataTest(' /* zz */\r\n true /* zz */\n',
-  [ { type: 'whitespace', raw: ' ' },
+  [{ type: 'whitespace', raw: ' ' },
     { type: 'comment', raw: '/* zz */' },
     { type: 'whitespace', raw: '\r\n ' },
     { type: 'literal', raw: 'true', value: true },
     { type: 'whitespace', raw: ' ' },
     { type: 'comment', raw: '/* zz */' },
-    { type: 'whitespace', raw: '\n' } ])
+    { type: 'whitespace', raw: '\n' }])
 
 addDataTest('{q:123,  w : /*zz*/\n\r 345 } ',
-  [ { type: 'symbol', raw: '{', value: '{' },
+  [{ type: 'symbol', raw: '{', value: '{' },
     { type: 'literal', raw: 'q', value: 'q' },
     { type: 'symbol', raw: ':', value: ':' },
     { type: 'literal', raw: '123', value: 123 },
@@ -70,18 +70,18 @@ addDataTest('{q:123,  w : /*zz*/\n\r 345 } ',
     { type: 'literal', raw: '345', value: 345 },
     { type: 'whitespace', raw: ' ' },
     { type: 'symbol', raw: '}', value: '}' },
-    { type: 'whitespace', raw: ' ' } ])
+    { type: 'whitespace', raw: ' ' }])
 
 addDataTest('null /* */// xxx\n//xxx',
-  [ { type: 'literal', raw: 'null', value: null },
+  [{ type: 'literal', raw: 'null', value: null },
     { type: 'whitespace', raw: ' ' },
     { type: 'comment', raw: '/* */' },
     { type: 'comment', raw: '// xxx' },
     { type: 'whitespace', raw: '\n' },
-    { type: 'comment', raw: '//xxx' } ])
+    { type: 'comment', raw: '//xxx' }])
 
 addDataTest('[1,2,[[],[1]],{},{1:2},{q:{q:{}}},]',
-  [ { type: 'symbol', raw: '[', value: '[' },
+  [{ type: 'symbol', raw: '[', value: '[' },
     { type: 'literal', raw: '1', value: 1 },
     { type: 'symbol', raw: ',', value: ',' },
     { type: 'literal', raw: '2', value: 2 },
@@ -115,7 +115,7 @@ addDataTest('[1,2,[[],[1]],{},{1:2},{q:{q:{}}},]',
     { type: 'symbol', raw: '}', value: '}' },
     { type: 'symbol', raw: '}', value: '}' },
     { type: 'symbol', raw: ',', value: ',' },
-    { type: 'symbol', raw: ']', value: ']' } ])
+    { type: 'symbol', raw: ']', value: ']' }])
 
 addTest('tokenizes without raw input, location and path properties', function () {
   var result = tokenize('{q:123,  w : /*zz*/\n\r "ab" } ', { mode: 'json5' })

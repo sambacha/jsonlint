@@ -15,11 +15,11 @@ function isDecDigit (x) {
 var unescapeMap = {
   '"': '"',
   '\\': '\\',
-  'b': '\b',
-  'f': '\f',
-  'n': '\n',
-  'r': '\r',
-  't': '\t',
+  b: '\b',
+  f: '\f',
+  n: '\n',
+  r: '\r',
+  t: '\t',
   '/': '/'
 }
 

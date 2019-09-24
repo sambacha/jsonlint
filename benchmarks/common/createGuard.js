@@ -13,7 +13,7 @@ class Guard extends EventEmitter {
   }
 
   start () {
-    for (let test of this.tests) {
+    for (const test of this.tests) {
       try {
         this.emit('before:test', { target: test })
         test.callback()

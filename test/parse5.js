@@ -51,9 +51,9 @@ function getFilter (name) {
 }
 
 var pointJson = '{"x": 1, "y": 2}'
-assert.deepEqual({ 'x': 1, 'y': 2 }, parse(pointJson))
-assert.deepEqual({ 'x': 1 }, parse(pointJson, getFilter('y')))
-assert.deepEqual({ 'y': 2 }, parse(pointJson, getFilter('x')))
+assert.deepEqual({ x: 1, y: 2 }, parse(pointJson))
+assert.deepEqual({ x: 1 }, parse(pointJson, getFilter('y')))
+assert.deepEqual({ y: 2 }, parse(pointJson, getFilter('x')))
 assert.deepEqual([1, 2, 3], parse('[1, 2, 3]'))
 var arrayWithHole = [1]
 ++arrayWithHole.length
@@ -68,9 +68,9 @@ function DoubleNumbers (key, value) {
 }
 
 var deepObject = '{"a": {"b": 1, "c": 2}, "d": {"e": {"f": 3}}}'
-assert.deepEqual({ 'a': { 'b': 1, 'c': 2 }, 'd': { 'e': { 'f': 3 } } },
+assert.deepEqual({ a: { b: 1, c: 2 }, d: { e: { f: 3 } } },
   parse(deepObject))
-assert.deepEqual({ 'a': { 'b': 2, 'c': 4 }, 'd': { 'e': { 'f': 6 } } },
+assert.deepEqual({ a: { b: 2, c: 4 }, d: { e: { f: 6 } } },
   parse(deepObject, DoubleNumbers))
 
 function testInvalid (input) {
