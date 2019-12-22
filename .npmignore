@@ -12,4 +12,5 @@ coverage
 scripts
 src
 test
+tslint.yml
 web/*.html
