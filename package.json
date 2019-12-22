@@ -30,7 +30,7 @@
     "jsonlint": "lib/cli.js"
   },
   "engines": {
-    "node": ">= 0.6"
+    "node": ">= 6"
   },
   "scripts": {
     "prepare": "npm run lint && npm run build",
