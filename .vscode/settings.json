@@ -2,16 +2,18 @@
 {
   "files.exclude": {
     ".nyc_output": true,
-    "node_modules": true
+    "node_modules": true,
+    "web/*.js": true,
+    "web/*.map": true
   },
   "search.exclude": {
-    "**/benchmarks/jison": true,
-    "**/benchmarks/pegjs": true,
+    "**/benchmarks": true,
     "**/coverage": true,
     "**/test/fails": true,
     "**/test/passes": true,
     "**/test/recursive": true,
-    "**/test/v8": true
+    "**/test/v8": true,
+    "**/test/typings.test.js": true
 },
   "eslint.enable": true
 }
