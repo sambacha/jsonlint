@@ -127,4 +127,10 @@ addTest('without raw input, location and path properties', function () {
   })
 })
 
+addTest('does not enforce tokenization in the input options', function () {
+  var options = {}
+  tokenize('{}', options)
+  assert.equal(options.tokenize, undefined)
+})
+
 if (require.main === module) { require('test').run(exports) }

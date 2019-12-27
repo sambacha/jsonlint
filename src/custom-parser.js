@@ -651,6 +651,11 @@ function tokenize (input, options) { // eslint-disable-line no-unused-vars
   if (!options) {
     options = {}
   }
+  // As long as this is the single modification, this is easier than cloning.
+  // (Once Node.js 6 is dropped, this can be replaced by object destructuring.)
+  var oldTokenize = options.tokenize
   options.tokenize = true
-  return parseInternal(input, options)
+  var tokens = parseInternal(input, options)
+  options.tokenize = oldTokenize
+  return tokens
 }

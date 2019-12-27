@@ -9,6 +9,7 @@
   "search.exclude": {
     "**/benchmarks": true,
     "**/coverage": true,
+    "**/lib/jsonlint.js": true,
     "**/test/fails": true,
     "**/test/passes": true,
     "**/test/recursive": true,
