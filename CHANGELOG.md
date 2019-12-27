@@ -1,3 +1,9 @@
+# [10.0.1](https://github.com/prantlf/jsonlint/compare/v10.0.0...v10.0.1) (2019-12-27)
+
+### Bug Fixes
+
+* Pretty-printer: keep the comment after opening an object scope indented ([4fbc09d](https://github.com/prantlf/jsonlint/commit/4fbc09d402ed5442e2de77382342267e330cb908))
+
 # [10.0.0](https://github.com/prantlf/jsonlint/compare/v9.0.0...v10.0.0) (2019-12-27)
 
 ### Bug Fixes
