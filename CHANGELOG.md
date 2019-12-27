@@ -1,3 +1,9 @@
+# [10.0.2](https://github.com/prantlf/jsonlint/compare/v10.0.1...v10.0.2) (2019-12-27)
+
+### Bug Fixes
+
+* Do not modify input options in the tokenize method ([7e3ac0b](https://github.com/prantlf/jsonlint/commit/7e3ac0babf873c42da1daadaee2bbe55d2644690))
+
 # [10.0.1](https://github.com/prantlf/jsonlint/compare/v10.0.0...v10.0.1) (2019-12-27)
 
 ### Bug Fixes
