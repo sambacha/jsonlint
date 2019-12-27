@@ -84,8 +84,8 @@ By default, `jsonlint` will either report a syntax error with details or pretty-
       -E, --extensions [ext]       file extensions to process for directory walk
                                    (default: ["json","JSON"])
       -i, --in-place               overwrite the input files
-      -t, --indent [char]          characters to use for indentation
-                                   (default: "  ")
+      -t, --indent [num|char]      number of spaces or specific characters
+                                   to use for indentation (default: 2)
       -c, --compact                compact error display
       -M, --mode [mode]            set other parsing flags according to a format
                                    type (default: "json")
@@ -190,7 +190,7 @@ You can parse a JSON string to an array of tokens and print it back to a string 
 const { tokenize } = require('@prantlf/jsonlint')
 const tokens = tokenize('string with JSON data', { rawTokens: true })
 const { print } = require('@prantlf/jsonlint/lib/printer')
-const output = print(tokens, { indent: '  ' })
+const output = print(tokens, { indent: 2 })
 ```
 
 The [`tokenize`](#tokenizing) method accepts options in the second optional parameter. See the [`tokenize`](#tokenizing) method above for more information.
@@ -199,7 +199,7 @@ The [`print`](#pretty-printing) method accepts an object `options` as the second
 
 | Option                      | Description                                             |
 | --------------------------- | ------------------------------------------------------- |
-| `indent`                    | whitespace characters to be used as an indentation unit |
+| `indent`                    | count of spaces or the specific characters to be used as an indentation unit |
 | `pruneComments`             | will omit all tokens with comments                      |
 | `stripObjectKeys` | will not print quotes around object keys which are JavaScript identifier names |
 
@@ -213,13 +213,13 @@ print(tokens, {})
 // (Just introduce line breaks.)
 print(tokens, { indent: '' })
 // Print to multiple lines with object and array indentation. (Just like
-//`JSON.stringify(json, undefined, '  ')` would do it, but retaining comments.)
-print(tokens, { indent: '  ' })
+//`JSON.stringify(json, undefined, 2)` would do it, but retaining comments.)
+print(tokens, { indent: 2 })
 // Print to multiple lines with object and array indentation, omit comments.
 // (Just like `JSON.stringify(json, undefined, '  ')` would do it.)
 print(tokens, { indent: '  ', pruneComments: true })
 // Print to multiple lines with indentation enabled and JSON5 object keys.
-print(tokens, { indent: '  ', stripObjectKeys: true })
+print(tokens, { indent: '\t', stripObjectKeys: true })
 ```
 
 ### Tokenizing
@@ -305,8 +305,9 @@ ${reason}`)
 
 Copyright (C) 2012-2019 Zachary Carter, Ferdinand Prantl
 
-Licensed under the MIT license.
+Licensed under the [MIT License].
 
+[MIT License]: http://en.wikipedia.org/wiki/MIT_License
 [pure JavaScript version]: http://prantlf.github.com/jsonlint/
 [jsonlint.com]: http://jsonlint.com
 [JSON]: https://tools.ietf.org/html/rfc8259

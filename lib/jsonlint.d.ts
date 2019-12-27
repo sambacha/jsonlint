@@ -87,7 +87,7 @@ declare module '@prantlf/jsonlint/lib/validator' {
 
 declare module '@prantlf/jsonlint/lib/printer' {
   interface PrintOptions {
-    indent?: string
+    indent?: number | string
     pruneComments?: boolean
     stripObjectKeys?: boolean
   }
@@ -100,7 +100,7 @@ declare module '@prantlf/jsonlint/lib/printer' {
    * import { tokenize } from '@prantlf/jsonlint'
    * import { print } from '@prantlf/jsonlint/lib/printer'
    * const tokens = tokenize('string with JSON data', { rawTokens: true })
-   * const outputString = print(tokens, { indent: '  ' })
+   * const outputString = print(tokens, { indent: 2 })
    * ```
    *
    * @param tokens - an array of JSON tokens

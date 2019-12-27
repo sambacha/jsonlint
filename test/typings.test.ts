@@ -61,7 +61,10 @@ addTest('print', () => {
   const result = print(tokens)
   assert.equal(result, '{}')
   print(tokens, {})
+  print(tokens, { indent: 2 })
   print(tokens, { indent: '  ' })
+  print(tokens, { pruneComments: true })
+  print(tokens, { stripObjectKeys: true })
   assert.ok(true)
 })
 

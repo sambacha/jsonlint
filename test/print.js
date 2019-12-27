@@ -53,7 +53,7 @@ addTest('introduce line breaks', function () {
 })
 
 addTest('apply indent', function () {
-  var output = print(tokens, { indent: '  ' })
+  var output = print(tokens, { indent: 2 })
   assert.equal(output, '/* start */\n{\n  "a": 1, // c\n  "0b": [\n    2,\n    3\n  ]\n}')
 })
 
