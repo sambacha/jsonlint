@@ -280,7 +280,7 @@
           var tokens = jsonlint.tokenize(source, parserOptions)
           // TODO: Support sorting tor the tokenized input too.
           return jsonlintPrinter.print(tokens, {
-            indent: '  ',
+            indent: 2,
             pruneComments: document.getElementById('prune-comments').checked,
             stripObjectKeys: document.getElementById('strip-object-keys').checked
           })
