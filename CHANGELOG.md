@@ -1,3 +1,9 @@
+# [10.1.0](https://github.com/prantlf/jsonlint/compare/v10.0.2...v10.1.0) (2019-12-27)
+
+### Features
+
+* Alternatively accept number of spaces for the indent parameter ([4c25739](https://github.com/prantlf/jsonlint/commit/4c257399b77e446c198b25049fae2ca08ad174ec))
+
 # [10.0.2](https://github.com/prantlf/jsonlint/compare/v10.0.1...v10.0.2) (2019-12-27)
 
 ### Bug Fixes
