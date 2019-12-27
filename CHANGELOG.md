@@ -1,3 +1,9 @@
+# [10.1.1](https://github.com/prantlf/jsonlint/compare/v10.1.0...v10.1.1) (2019-12-27)
+
+### Bug Fixes
+
+* Restore compatibility with IE11 ([55b8a48](https://github.com/prantlf/jsonlint/commit/55b8a4816b08c5504cf7f0841d1997634a6376ea))
+
 # [10.1.0](https://github.com/prantlf/jsonlint/compare/v10.0.2...v10.1.0) (2019-12-27)
 
 ### Features
