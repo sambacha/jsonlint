@@ -9,7 +9,7 @@ function addTest (description, test) {
   if (typeof describe === 'function') {
     it(description, test)
   } else {
-    test()
+    exports['test tokenize: ' + description] = test
   }
 }
 
@@ -40,7 +40,7 @@ function addDataTest (input, tokens) {
     })
     assert.deepEqual(result, tokens)
   }
-  addTest('tokenize: ' + JSON.stringify(input), test)
+  addTest(JSON.stringify(input), test)
 }
 
 addDataTest('123', [{ type: 'literal', raw: '123', value: 123 }])
@@ -117,7 +117,7 @@ addDataTest('[1,2,[[],[1]],{},{1:2},{q:{q:{}}},]',
     { type: 'symbol', raw: ',', value: ',' },
     { type: 'symbol', raw: ']', value: ']' }])
 
-addTest('tokenizes without raw input, location and path properties', function () {
+addTest('without raw input, location and path properties', function () {
   var result = tokenize('{q:123,  w : /*zz*/\n\r "ab" } ', { mode: 'json5' })
   result.forEach(function (item) {
     assert.equal(typeof item, 'object')
@@ -126,3 +126,5 @@ addTest('tokenizes without raw input, location and path properties', function ()
     assert.equal(typeof item.path, 'undefined')
   })
 })
+
+if (require.main === module) { require('test').run(exports) }

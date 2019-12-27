@@ -17,6 +17,7 @@ This is a fork of the original package with the following enhancements:
 * Optionally recognizes JavaScript-style comments and single quoted strings.
 * Optionally ignores trailing commas and reports duplicate object keys as an error.
 * Supports [JSON Schema] drafts 04, 06 and 07.
+* Offers pretty-printing including comment-stripping and object keys without quotes (JSON5).
 * Prefers the native JSON parser if possible to run [7x faster than the custom parser].
 * Reports errors with rich additional information. From the schema validation too.
 * Implements JavaScript modules using [UMD] to work everywhere.
@@ -76,25 +77,32 @@ By default, `jsonlint` will either report a syntax error with details or pretty-
 
     Usage: jsonlint [options] [<file or directory> ...]
 
-    JSON parser and validator - checks syntax and semantics of JSON data.
+    JSON parser, syntax and schema validator and pretty-printer.
 
     Options:
-      -s, --sort-keys              sort object keys
+      -s, --sort-keys              sort object keys (not when prettifying)
       -E, --extensions [ext]       file extensions to process for directory walk
                                    (default: ["json","JSON"])
       -i, --in-place               overwrite the input files
-      -t, --indent [char]          characters to use for indentation (default: "  ")
+      -t, --indent [char]          characters to use for indentation
+                                   (default: "  ")
       -c, --compact                compact error display
-      -M, --mode                   set other parsing flags according to a format type
+      -M, --mode [mode]            set other parsing flags according to a format
+                                   type (default: "json")
       -C, --comments               recognize and ignore JavaScript-style comments
       -S, --single-quoted-strings  support single quotes as string delimiters
-      -T, --trailing-commas'       ignore trailing commas in objects and arrays
+      -T, --trailing-commas        ignore trailing commas in objects and arrays
       -D, --no-duplicate-keys      report duplicate object keys as an error
       -V, --validate [file]        JSON schema file to use for validation
-      -e, --environment [env]      which specification of JSON Schema
-                                   the validation file uses
+      -e, --environment [env]      which specification of JSON Schema the
+                                   validation file uses
       -q, --quiet                  do not print the parsed json to stdin
-      -p, --pretty-print           force pretty-printing even for invalid input
+      -p, --pretty-print           prettify the input instead of stringifying
+                                   the parsed object
+      -P, --pretty-print-invalid   force pretty-printing even for invalid input
+      --prune-comments             omit comments from the prettified output
+      --strip-object-keys          strip quotes from object keys if possible
+                                   (JSON5)
       -v, --version                output the version number
       -h, --help                   output usage information
 
@@ -138,21 +146,21 @@ The exported `parse` method is compatible with the native `JSON.parse` method. T
 
 The `parse` method offers more detailed [error information](#error-handling), than the native `JSON.parse` method and it supports additional parsing options:
 
-| Option                     | Description                 |
-| -------------------------- | --------------------------- |
+| Option                     | Description                                 |
+| -------------------------- | ------------------------------------------- |
 | `ignoreComments`           | ignores single-line and multi-line JavaScript-style comments during parsing as another "whitespace" (boolean) |
-| `ignoreTrailingCommas`     | ignores trailing commas in objects and arrays (boolean) |
-| `allowSingleQuotedStrings` | accepts strings delimited by single-quotes too (boolean) |
+| `ignoreTrailingCommas`     | ignores trailing commas in objects and arrays (boolean)      |
+| `allowSingleQuotedStrings` | accepts strings delimited by single-quotes too (boolean)     |
 | `allowDuplicateObjectKeys` | allows reporting duplicate object keys as an error (boolean) |
 | `mode`                     | sets multiple options according to the type of input data (string) |
 | `reviver`                  | converts object and array values (function) |
 
 The `mode` parameter (string) sets parsing options to match a common format of input data:
 
-| Mode    | Description                 |
-| ------- | --------------------------- |
+| Mode    | Description                                               |
+| ------- | --------------------------------------------------------- |
 | `json`  | complies to the pure standard [JSON] (default if not set) |
-| `cjson` | JSON with comments (sets `ignoreComments`) |
+| `cjson` | JSON with comments (sets `ignoreComments`)                |
 | `json5` | complies to [JSON5]  (sets `ignoreComments`, `allowSingleQuotedStrings`, `ignoreTrailingCommas` and enables other JSON5 features) |
 
 ### Schema Validation
@@ -174,6 +182,75 @@ const validate = compile('string with JSON schema', {
 })
 ```
 
+### Pretty-Printing
+
+You can parse a JSON string to an array of tokens and print it back to a string with some changes applied. It can be unification of whitespace or tripping comments, for example. (Raw token values must be enabled when tokenizing the JSON input.)
+
+```js
+const { tokenize } = require('@prantlf/jsonlint')
+const tokens = tokenize('string with JSON data', { rawTokens: true })
+const { print } = require('@prantlf/jsonlint/lib/printer')
+const output = print(tokens, { indent: '  ' })
+```
+
+The [`tokenize`](#tokenizing) method accepts options in the second optional parameter. See the [`tokenize`](#tokenizing) method above for more information.
+
+The [`print`](#pretty-printing) method accepts an object `options` as the second optional parameter. The following properties will be recognized there:
+
+| Option                      | Description                                             |
+| --------------------------- | ------------------------------------------------------- |
+| `indent`                    | whitespace characters to be used as an indentation unit |
+| `pruneComments`             | will omit all tokens with comments                      |
+| `stripObjectKeys` | will not print quotes around object keys which are JavaScript identifier names |
+
+```js
+// Just concatenate the tokens to produce the same output as was the input.
+print(tokens)
+// Strip all whitespace. (Just like `JSON.stringify(json)` would do it,
+// but leaving comments in the output.)
+print(tokens, {})
+// Print to multiple lines without object and array indentation.
+// (Just introduce line breaks.)
+print(tokens, { indent: '' })
+// Print to multiple lines with object and array indentation. (Just like
+//`JSON.stringify(json, undefined, '  ')` would do it, but retaining comments.)
+print(tokens, { indent: '  ' })
+// Print to multiple lines with object and array indentation, omit comments.
+// (Just like `JSON.stringify(json, undefined, '  ')` would do it.)
+print(tokens, { indent: '  ', pruneComments: true })
+// Print to multiple lines with indentation enabled and JSON5 object keys.
+print(tokens, { indent: '  ', stripObjectKeys: true })
+```
+
+### Tokenizing
+
+The method `tokenize` has the same prototype as the method [`parse`](#module-interface), but returns an array of tokens instead of the JSON object.
+
+```js
+const { tokenize } = require('@prantlf/jsonlint')
+const tokens = tokenize('{"flag":true /* default */}', { ignoreComments: true }))
+// Returns the following array:
+// [
+//   { type: 'symbol',     raw: '{',      value: '{' },
+//   { type: 'literal',    raw: '"flag"', value: 'flag' },
+//   { type: 'symbol',     raw: ':',      value: ':' },
+//   { type: 'literal',    raw: 'true',   value: true },
+//   { type: 'whitespace', raw: ' ' },
+//   { type: 'comment',    raw: '/* default */' },
+//   { type: 'symbol',     raw: '}',      value: '}' }
+// ]
+```
+
+The `tokenize` method accepts options in the second optional parameter. See the [`parse`](#module-interface) method above for the shared options. There are several additional options supported for the tokenization:
+
+| Option           | Description                                                        |
+| -----------------| ------------------------------------------------------------------ |
+| `rawTokens`      | adds a `raw` property with the original string from the JSON input |
+| `tokenLocations` | adds a `location` property with start, end and length of the original string from the JSON input |
+| `tokenPaths`     | adds a `path` property with an array of keys and array indexes "on the way to" the token's value |
+
+If you want to retain comments or whitespace for pretty-printing, for example, set `rawTokens` to true. (The [`print`](#pretty-printing) method requires tokens produced with this flag enabled.)
+
 ### Performance
 
 This is a part of an output from the [parser benchmark], when parsing a 4.2 KB formatted string ([package.json](./package.json)) with Node.js 10.15.3:
@@ -181,8 +258,8 @@ This is a part of an output from the [parser benchmark], when parsing a 4.2 KB f
     the built-in parser x 68,212 ops/sec ±0.86% (87 runs sampled)
     the pure jju parser x 10,234 ops/sec ±1.08% (89 runs sampled)
     the extended jju parser x 10,210 ops/sec ±1.26% (88 runs sampled)
-    the tokenisable jju parser x 8,832 ops/sec ±0.92% (89 runs sampled)
-    the tokenising jju parser x 7,911 ops/sec ±1.05% (86 runs sampled)
+    the tokenizable jju parser x 8,832 ops/sec ±0.92% (89 runs sampled)
+    the tokenizing jju parser x 7,911 ops/sec ±1.05% (86 runs sampled)
 
 A custom JSON parser is [a lot slower] than the built-in one. However, it is more important to have a [clear error reporting] than the highest speed in scenarios like parsing configuration files. Extending the parser with the support for comments and single-quoted strings does not affect the performance. Making the parser collect tokens and their locations decreases the performance a bit.
 

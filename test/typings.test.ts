@@ -1,8 +1,19 @@
 import { strict as assert } from 'assert'
 import { parse } from '..'
 import { compile } from '../lib/validator'
+import { print } from '../lib/printer'
 
-exports['test type declarations for parse'] = () => {
+declare function it (description: string, test: Function): void
+
+function addTest (description, test) {
+  if (typeof it === 'function') {
+    it(description, test)
+  } else {
+    exports['test type declarations of ' + description] = test
+  }
+}
+
+addTest('parse', () => {
   const result = parse('{}')
   assert.equal(typeof result, 'object')
   parse('{}', () => undefined)
@@ -18,9 +29,9 @@ exports['test type declarations for parse'] = () => {
     reviver: () => undefined
   })
   assert.ok(true)
-}
+})
 
-exports['test type declarations for compile'] = () => {
+addTest('compile', () => {
   const validate = compile('{}')
   assert.equal(typeof validate, 'function')
   compile('{}', 'json-schema-draft-04')
@@ -40,6 +51,18 @@ exports['test type declarations for compile'] = () => {
     allowDuplicateObjectKeys: true
   })
   assert.ok(true)
-}
+})
+
+addTest('print', () => {
+  const tokens = [
+    { type: 'symbol', value: '{', raw: '{' },
+    { type: 'symbol', value: '}', raw: '}' }
+  ]
+  const result = print(tokens)
+  assert.equal(result, '{}')
+  print(tokens, {})
+  print(tokens, { indent: '  ' })
+  assert.ok(true)
+})
 
 if (require.main === module) { require('test').run(exports) }

@@ -11,7 +11,7 @@ function addTest (name, fn) {
   if (typeof (describe) === 'function') {
     it(name, fn)
   } else {
-    fn()
+    exports['test ' + name] = fn
   }
 }
 
@@ -62,3 +62,5 @@ for (var k in tests) {
     })
   })(k)
 }
+
+if (require.main === module) { require('test').run(exports) }

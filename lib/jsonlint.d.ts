@@ -10,8 +10,8 @@ interface ParseOptions {
 }
 
 /**
- * Parses a string formatted as JSON. It is compatible with the native
- * `JSON.parse` method.
+ * Parses a string formatted as JSON to a JSON output (primitive type, object
+ * or array). It is compatible with the native `JSON.parse` method.
  *
  * @example
  * ```ts
@@ -25,6 +25,34 @@ interface ParseOptions {
  * @returns the parsed result - a primitive value, array or object
  */
 declare function parse (input: string, reviverOrOptions?: Function | ParseOptions): object
+
+interface TokenizeOptions {
+  ignoreComments?: boolean
+  ignoreTrailingCommas?: boolean
+  allowSingleQuotedStrings?: boolean
+  allowDuplicateObjectKeys?: boolean
+  mode?: ParseMode
+  reviver?: Function
+  rawTokens?: boolean
+  tokenLocations?: boolean
+  tokenPaths?: boolean
+}
+
+/**
+ * Parses a string formatted as JSON to an array of JSON tokens.
+ *
+ * @example
+ * ```ts
+ * import { tokenize } from '@prantlf/jsonlint'
+ * const tokens = tokenize('string with JSON data')
+ * ```
+ *
+ * @param input - a string input to parse
+ * @param reviverOrOptions - either a value reviver or an object
+ *                           with multiple options
+ * @returns an array with the tokens
+ */
+declare function tokenize (input: string, reviverOrOptions?: Function | TokenizeOptions): object
 
 declare module '@prantlf/jsonlint/lib/validator' {
   type Environment = 'json-schema-draft-04' | 'json-schema-draft-06' | 'json-schema-draft-07'
@@ -57,4 +85,29 @@ declare module '@prantlf/jsonlint/lib/validator' {
   function compile (schema: string, environmentOrOptions?: Environment | CompileOptions): Function
 }
 
-export { parse }
+declare module '@prantlf/jsonlint/lib/printer' {
+  interface PrintOptions {
+    indent?: string
+    pruneComments?: boolean
+    stripObjectKeys?: boolean
+  }
+
+  /**
+   * Pretty-prints an array of JSON tokens parsed from a valid JSON string by `tokenize`.
+   *
+   * @example
+   * ```ts
+   * import { tokenize } from '@prantlf/jsonlint'
+   * import { print } from '@prantlf/jsonlint/lib/printer'
+   * const tokens = tokenize('string with JSON data', { rawTokens: true })
+   * const outputString = print(tokens, { indent: '  ' })
+   * ```
+   *
+   * @param tokens - an array of JSON tokens
+   * @param options - an object with multiple options
+   * @returns the output string
+   */
+  function print (tokens: Array<object>, options?: PrintOptions): string
+}
+
+export { parse, tokenize }
