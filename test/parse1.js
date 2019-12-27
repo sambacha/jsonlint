@@ -16,7 +16,7 @@ parse = nativeParser ? exported.parseNative : exported.parseCustom
 function checkErrorInformation (error) {
   assert.equal(typeof error.message, 'string')
   assert.equal(typeof error.reason, 'string')
-  assert.equal(typeof error.exzerpt, 'string')
+  assert.equal(typeof error.excerpt, 'string')
   if (!oldNode) {
     assert.equal(typeof error.pointer, 'string')
     assert.equal(typeof error.location, 'object')
@@ -264,7 +264,7 @@ if (!oldNode) {
       exported.parseNative(json)
       assert.fail('should throw error')
     } catch (error) {
-      assert.equal(error.exzerpt, '...      "bar":    }    }')
+      assert.equal(error.excerpt, '...      "bar":    }    }')
       assert.equal(error.pointer, '-------------------^')
       assert.equal(error.reason, 'Unexpected token }')
       assert.deepEqual(error.location, {
@@ -281,7 +281,7 @@ exports['test error location with Windows line breaks using the custom parser'] 
     exported.parseCustom(json)
     assert.fail('should throw error')
   } catch (error) {
-    assert.equal(error.exzerpt, '...      "bar":    }    }')
+    assert.equal(error.excerpt, '...      "bar":    }    }')
     assert.equal(error.pointer, '-------------------^')
     assert.equal(error.reason, 'No value found for key "bar"')
     assert.deepEqual(error.location, {

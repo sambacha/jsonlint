@@ -271,8 +271,8 @@ If parsing fails, a `SyntaxError` will be thrown with the following properties:
 | ---------- | ----------------------------------------- |
 | `message`  | the full multi-line error message         |
 | `reason`   | one-line explanation of the error         |
-| `exzerpt`  | part of the input string around the error |
-| `pointer`  | "--^" pointing to the error in `exzerpt`  |
+| `excerpt`  | part of the input string around the error |
+| `pointer`  | "--^" pointing to the error in `excerpt`  |
 | `location` | object pointing to the error location     |
 
 The `location` object contains properties `line`, `column` and `offset`.
@@ -289,13 +289,13 @@ const { parse } = require('@prantlf/jsonlint')
 try {
   parse('{"creative": ?}')
 } catch (error) {
-  const { message, reason, exzerpt, pointer, location } = error
+  const { message, reason, excerpt, pointer, location } = error
   const { column, line, offset } = location.start
   // Logs the complete error message:
   console.log(message)
   // Logs the same text as included in the `message` property:
   console.log(`Parse error on line ${line}, ${column} column:
-${exzerpt}
+${excerpt}
 ${pointer}
 ${reason}`)
 }

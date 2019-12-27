@@ -114,7 +114,7 @@ function parseInternal (input, options) {
     var texts = getTexts(message, input, position, lineNumber, column)
     var error = SyntaxError(texts.message)
     error.reason = message
-    error.exzerpt = texts.exzerpt
+    error.excerpt = texts.excerpt
     error.pointer = texts.pointer
     error.location = {
       start: {

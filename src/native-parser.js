@@ -29,7 +29,7 @@ function getPositionContext (input, offset) {
   var upcoming = upcomingInput(input, offset)
   var pointer = new Array(past.length + 1).join('-') + '^'
   return {
-    exzerpt: past + upcoming,
+    excerpt: past + upcoming,
     pointer: pointer
   }
 }
@@ -90,18 +90,18 @@ function getLocationOnSpiderMonkey (input, reason) {
 
 function getTexts (reason, input, offset, line, column) {
   var position = getPositionContext(input, offset)
-  var exzerpt = position.exzerpt
+  var excerpt = position.excerpt
   var message, pointer
   if (typeof line === 'number') {
     pointer = position.pointer
     message = 'Parse error on line ' + line + ', column ' +
-      column + ':\n' + exzerpt + '\n' + pointer + '\n' + reason
+      column + ':\n' + excerpt + '\n' + pointer + '\n' + reason
   } else {
-    message = 'Parse error in JSON input:\n' + exzerpt + '\n' + reason
+    message = 'Parse error in JSON input:\n' + excerpt + '\n' + reason
   }
   return {
     message: message,
-    exzerpt: exzerpt,
+    excerpt: excerpt,
     pointer: pointer
   }
 }
@@ -123,7 +123,7 @@ function improveNativeError (input, error) {
   error.reason = reason
   var texts = getTexts(reason, input, offset, line, column)
   error.message = texts.message
-  error.exzerpt = texts.exzerpt
+  error.excerpt = texts.excerpt
   if (texts.pointer) {
     error.pointer = texts.pointer
     error.location = {
