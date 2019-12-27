@@ -117,12 +117,24 @@
           <div>
             <span>Formatting:</span>
             <div>
-              <input type="checkbox" checked id="reformat">
-              <label for="reformat">Reformat source</label>
+              <input type="checkbox" checked id="format">
+              <label for="format">Format output</label>
+            </div>
+            <div>
+              <input type="checkbox" id="pretty-print">
+              <label for="pretty-print">Pretty-print source</label>
             </div>
             <div>
               <input type="checkbox" id="sort-object-keys">
               <label for="sort-object-keys">Sort object keys</label>
+            </div>
+            <div style="display: none">
+              <input type="checkbox" id="prune-comments">
+              <label for="prune-comments">Omit comments</label>
+            </div>
+            <div style="display: none">
+              <input type="checkbox" id="strip-object-keys">
+              <label for="strip-object-keys">Strip quotes from object keys</label>
             </div>
           </div>
           <div>
@@ -161,34 +173,122 @@
   </footer>
   <script src="jsonlint.min.js" defer></script>
   <script src="sorter.min.js" defer></script>
+  <script src="printer.min.js" defer></script>
   <script src="ajv.min.js" defer></script>
   <script src="schema-drafts.min.js" defer></script>
   <script src="validator.min.js" defer></script>
   <script defer>
     window.onload = function () {
-      document.getElementById('with-schema').onchange = function () {
-        var className = ''
-        if (document.getElementById('with-schema').checked) {
-          className = 'with-schema'
-        }
+      document
+        .getElementById('with-schema')
+        .addEventListener('change', toggleSchemaValidation)
+      document
+        .querySelectorAll('[name=mode]')
+        .forEach(function (element) {
+          element.addEventListener('change', selectParsingExtension)
+        })
+      document
+        .getElementById('validate')
+        .addEventListener('click', performValidation)
+      document
+        .getElementById('format')
+        .addEventListener('change', correctFormatting.bind(null, 'format', 'pretty-print'))
+      document
+        .getElementById('pretty-print')
+        .addEventListener('change', correctFormatting.bind(null, 'pretty-print', 'format'))
+
+      function toggleSchemaValidation () {
+        var className = document.getElementById('with-schema').checked
+          ? 'with-schema' : ''
         document.getElementById('source').className = className
       }
-      document.querySelectorAll('[name=mode]').forEach(function (element) {
-        element.onchange =  function () {
-          var mode = document.querySelector('[name=mode]:checked').id
-          document.getElementById('comments').parentElement.style.display =
-            mode === 'cjson' || mode === 'json5' ? 'none' : 'block'
-          document.getElementById('trailing-commas').parentElement.style.display =
-            mode === 'json5' ? 'none' : 'block'
-          document.getElementById('single-quoted-strings').parentElement.style.display =
-            mode === 'json5' ? 'none' : 'block'
+
+      function selectParsingExtension () {
+        var mode = document.querySelector('[name=mode]:checked').id
+        document.getElementById('comments').parentElement.style.display =
+          mode === 'cjson' || mode === 'json5' ? 'none' : 'block'
+        document.getElementById('trailing-commas').parentElement.style.display =
+          mode === 'json5' ? 'none' : 'block'
+        document.getElementById('single-quoted-strings').parentElement.style.display =
+          mode === 'json5' ? 'none' : 'block'
+      }
+
+      function correctFormatting (selected, other) {
+        if (document.getElementById(selected).checked &&
+            document.getElementById(other).checked) {
+          document.getElementById(other).checked = false
         }
-      })
-      document.getElementById('validate').onclick = function () {
+
+        var forFormat = ['sort-object-keys']
+        var forPrettyPrint = ['prune-comments', 'strip-object-keys']
+        swapVisibility(document.getElementById('pretty-print').checked,
+          forPrettyPrint, forFormat)
+
+        function swapVisibility (flag, show, hide) {
+          if (!flag) {
+            var temp = show
+            show = hide
+            hide = temp
+          }
+          setVisibility(show, 'block')
+          setVisibility(hide, 'none')
+        }
+
+        function setVisibility (elements, display) {
+          elements.forEach(function (element) {
+            document.getElementById(element).parentElement.style.display = display
+          })
+        }
+      }
+
+      function performValidation () {
         document.getElementById('result-section').style.display = 'block'
+        var parserOptions = getParserOptions()
         try {
+          var source = document.getElementById('data').value
+          var parsed = parseInput(source, parserOptions)
+          document.getElementById('result').innerText = 'Data is valid!'
+          document.getElementById('result').className = 'pass'
+          if (document.getElementById('format').checked) {
+            document.getElementById('data').value = formatOutput(parsed)
+          } else if (document.getElementById('pretty-print').checked) {
+            document.getElementById('data').value = printOutput(source)
+          }
+        } catch (error) {
+          document.getElementById('result').innerText = error
+          document.getElementById('result').className = 'fail'
+        }
+
+        function parseInput (source, parserOptions) {
+          if (document.getElementById('with-schema').checked) {
+            var schema = document.getElementById('schema').value
+            var validate = jsonlintValidator.compile(schema, parserOptions)
+            return validate(source, parserOptions)
+          }
+          return jsonlint.parse(source, parserOptions)
+        }
+
+        function formatOutput (parsed) {
+          if (document.getElementById('sort-object-keys').checked) {
+            parsed = jsonlintSorter.sortObject(parsed)
+          }
+          return JSON.stringify(parsed, null, '  ')
+        }
+
+        function printOutput (source) {
+          parserOptions.rawTokens = true
+          var tokens = jsonlint.tokenize(source, parserOptions)
+          // TODO: Support sorting tor the tokenized input too.
+          return jsonlintPrinter.print(tokens, {
+            indent: '  ',
+            pruneComments: document.getElementById('prune-comments').checked,
+            stripObjectKeys: document.getElementById('strip-object-keys').checked
+          })
+        }
+
+        function getParserOptions (mode) {
           var mode = document.querySelector('[name=mode]:checked').id
-          var parserOptions = {
+          return {
             mode: mode,
             ignoreComments: document.getElementById('comments').checked ||
                             mode === 'cjson' || mode === 'json5',
@@ -198,26 +298,6 @@
                                       mode === 'json5',
             allowDuplicateObjectKeys: document.getElementById('duplicate-object-keys').checked,
           }
-          var source = document.getElementById('data').value
-          var parsed
-          if (document.getElementById('with-schema').checked) {
-            var schema = document.getElementById('schema').value
-            var validate = jsonlintValidator.compile(schema, parserOptions)
-            parsed = validate(source, parserOptions)
-          } else {
-            parsed = jsonlint.parse(source, parserOptions)
-          }
-          document.getElementById('result').innerText = 'Data is valid!'
-          document.getElementById('result').className = 'pass'
-          if (document.getElementById('reformat').checked) {
-            if (document.getElementById('sort-object-keys').checked) {
-              parsed = jsonlintSorter.sortObject(parsed)
-            }
-            document.getElementById('data').value = JSON.stringify(parsed, null, '  ')
-          }
-        } catch (error) {
-          document.getElementById('result').innerText = error
-          document.getElementById('result').className = 'fail'
         }
       }
     }
