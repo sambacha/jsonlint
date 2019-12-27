@@ -115,4 +115,30 @@ addTest('keep comment locations', function () {
   // // test`
 })
 
+addTest('keep comment after opening an object scope indented', function () {
+  // `{
+  // // String parameter
+  // "key": 'value',
+  // }`
+  var tokens = [
+    { type: 'symbol', raw: '{', value: '{' },
+    { type: 'whitespace', raw: '\n' },
+    { type: 'comment', raw: '// String parameter' },
+    { type: 'whitespace', raw: '\n' },
+    { type: 'literal', raw: '"key"', value: 'key' },
+    { type: 'symbol', raw: ':', value: ':' },
+    { type: 'whitespace', raw: ' ' },
+    { type: 'literal', raw: '\'value\'', value: 'value' },
+    { type: 'symbol', raw: ',', value: ',' },
+    { type: 'whitespace', raw: '\n' },
+    { type: 'symbol', raw: '}', value: '}' }
+  ]
+  var output = print(tokens, { indent: '  ' })
+  assert.equal(output, '{\n  // String parameter\n  "key": \'value\',\n  \n}')
+  // `{
+  // // String parameter
+  // "key": 'value',
+  // }`
+})
+
 if (require.main === module) { require('test').run(exports) }
