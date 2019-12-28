@@ -136,6 +136,14 @@
               <input type="checkbox" id="strip-object-keys">
               <label for="strip-object-keys">Strip quotes from object keys</label>
             </div>
+            <div style="display: none">
+              <input type="checkbox" id="enforce-double-quotes">
+              <label for="enforce-double-quotes">Enforce double quotes</label>
+            </div>
+            <div style="display: none">
+              <input type="checkbox" id="enforce-single-quotes">
+              <label for="enforce-single-quotes">Enforce single quotes</label>
+            </div>
           </div>
           <div>
             <span>Standard:</span>
@@ -196,6 +204,12 @@
       document
         .getElementById('pretty-print')
         .addEventListener('change', correctFormatting.bind(null, 'pretty-print', 'format'))
+      document
+        .getElementById('enforce-double-quotes')
+        .addEventListener('change', ensureOneSelected.bind(null, 'enforce-double-quotes', 'enforce-single-quotes'))
+      document
+        .getElementById('enforce-single-quotes')
+        .addEventListener('change', ensureOneSelected.bind(null, 'enforce-single-quotes', 'enforce-double-quotes'))
 
       function toggleSchemaValidation () {
         var className = document.getElementById('with-schema').checked
@@ -214,30 +228,36 @@
       }
 
       function correctFormatting (selected, other) {
-        if (document.getElementById(selected).checked &&
-            document.getElementById(other).checked) {
-          document.getElementById(other).checked = false
-        }
-
+        ensureOneSelected(selected, other)
         var forFormat = ['sort-object-keys']
-        var forPrettyPrint = ['prune-comments', 'strip-object-keys']
-        swapVisibility(document.getElementById('pretty-print').checked,
+        var forPrettyPrint = [
+          'prune-comments', 'strip-object-keys',
+          'enforce-double-quotes', 'enforce-single-quotes'
+        ]
+        swapWrapperVisibility(document.getElementById('pretty-print').checked,
           forPrettyPrint, forFormat)
 
-        function swapVisibility (flag, show, hide) {
+        function swapWrapperVisibility (flag, show, hide) {
           if (!flag) {
             var temp = show
             show = hide
             hide = temp
           }
-          setVisibility(show, 'block')
-          setVisibility(hide, 'none')
+          setWrapperVisibility(show, 'block')
+          setWrapperVisibility(hide, 'none')
         }
 
-        function setVisibility (elements, display) {
+        function setWrapperVisibility (elements, display) {
           elements.forEach(function (element) {
             document.getElementById(element).parentElement.style.display = display
           })
+        }
+      }
+
+      function ensureOneSelected (selected, other) {
+        if (document.getElementById(selected).checked &&
+            document.getElementById(other).checked) {
+          document.getElementById(other).checked = false
         }
       }
 
@@ -282,7 +302,9 @@
           return jsonlintPrinter.print(tokens, {
             indent: 2,
             pruneComments: document.getElementById('prune-comments').checked,
-            stripObjectKeys: document.getElementById('strip-object-keys').checked
+            stripObjectKeys: document.getElementById('strip-object-keys').checked,
+            enforceDoubleQuotes: document.getElementById('enforce-double-quotes').checked,
+            enforceSingleQuotes: document.getElementById('enforce-single-quotes').checked
           })
         }
 
