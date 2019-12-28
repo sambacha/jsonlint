@@ -202,6 +202,8 @@ The [`print`](#pretty-printing) method accepts an object `options` as the second
 | `indent`                    | count of spaces or the specific characters to be used as an indentation unit |
 | `pruneComments`             | will omit all tokens with comments                      |
 | `stripObjectKeys` | will not print quotes around object keys which are JavaScript identifier names |
+| `enforceDoubleQuotes`       | will surround all strings with double quotes            |
+| `enforceSingleQuotes`       | will surround all strings with single quotes            |
 
 ```js
 // Just concatenate the tokens to produce the same output as was the input.
@@ -220,6 +222,8 @@ print(tokens, { indent: 2 })
 print(tokens, { indent: '  ', pruneComments: true })
 // Print to multiple lines with indentation enabled and JSON5 object keys.
 print(tokens, { indent: '\t', stripObjectKeys: true })
+// Print to multiple lines with indentation enabled, unify JSON5 formatting.
+print(tokens, { indent: '    ', enforceDoubleQuotes: true })
 ```
 
 ### Tokenizing

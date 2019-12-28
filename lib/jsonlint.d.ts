@@ -90,6 +90,8 @@ declare module '@prantlf/jsonlint/lib/printer' {
     indent?: number | string
     pruneComments?: boolean
     stripObjectKeys?: boolean
+    enforceDoubleQuotes?: boolean
+    enforceSingleQuotes?: boolean
   }
 
   /**

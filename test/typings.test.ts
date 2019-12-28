@@ -65,6 +65,8 @@ addTest('print', () => {
   print(tokens, { indent: '  ' })
   print(tokens, { pruneComments: true })
   print(tokens, { stripObjectKeys: true })
+  print(tokens, { enforceDoubleQuotes: true })
+  print(tokens, { enforceSingleQuotes: true })
   assert.ok(true)
 })
 
