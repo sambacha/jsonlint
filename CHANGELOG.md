@@ -1,3 +1,9 @@
+# [10.2.0](https://github.com/prantlf/jsonlint/compare/v10.1.1...v10.2.0) (2019-12-28)
+
+### Features
+
+* Allow unifying quotes around object keys to double or single ones (JSON5) ([6b6da17](https://github.com/prantlf/jsonlint/commit/6b6da175cfea8f71841e145a525ef124c19c2607))
+
 # [10.1.1](https://github.com/prantlf/jsonlint/compare/v10.1.0...v10.1.1) (2019-12-27)
 
 ### Bug Fixes
