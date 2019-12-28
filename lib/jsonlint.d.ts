@@ -92,6 +92,7 @@ declare module '@prantlf/jsonlint/lib/printer' {
     stripObjectKeys?: boolean
     enforceDoubleQuotes?: boolean
     enforceSingleQuotes?: boolean
+    trimTrailingCommas?: boolean
   }
 
   /**

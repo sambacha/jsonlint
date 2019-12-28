@@ -161,4 +161,9 @@ addTest('enforce double quotes, but strip quotes from object keys', function () 
   assert.equal(output, '{/* String parameter */key:"value",}')
 })
 
+addTest('trim trailing commas', function () {
+  var output = print(stringTokens, { trimTrailingCommas: true })
+  assert.equal(output, '{/* String parameter */"key":\'value\'}')
+})
+
 if (require.main === module) { require('test').run(exports) }

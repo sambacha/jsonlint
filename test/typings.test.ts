@@ -67,6 +67,7 @@ addTest('print', () => {
   print(tokens, { stripObjectKeys: true })
   print(tokens, { enforceDoubleQuotes: true })
   print(tokens, { enforceSingleQuotes: true })
+  print(tokens, { trimTrailingCommas: true })
   assert.ok(true)
 })
 

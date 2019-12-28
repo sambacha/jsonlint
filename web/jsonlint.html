@@ -144,6 +144,10 @@
               <input type="checkbox" id="enforce-single-quotes">
               <label for="enforce-single-quotes">Enforce single quotes</label>
             </div>
+            <div style="display: none">
+              <input type="checkbox" id="trim-trailing-commas">
+              <label for="trim-trailing-commas">Trim trailing commas</label>
+            </div>
           </div>
           <div>
             <span>Standard:</span>
@@ -231,8 +235,8 @@
         ensureOneSelected(selected, other)
         var forFormat = ['sort-object-keys']
         var forPrettyPrint = [
-          'prune-comments', 'strip-object-keys',
-          'enforce-double-quotes', 'enforce-single-quotes'
+          'prune-comments', 'strip-object-keys', 'enforce-double-quotes',
+          'enforce-single-quotes', 'trim-trailing-commas'
         ]
         swapWrapperVisibility(document.getElementById('pretty-print').checked,
           forPrettyPrint, forFormat)
@@ -304,7 +308,8 @@
             pruneComments: document.getElementById('prune-comments').checked,
             stripObjectKeys: document.getElementById('strip-object-keys').checked,
             enforceDoubleQuotes: document.getElementById('enforce-double-quotes').checked,
-            enforceSingleQuotes: document.getElementById('enforce-single-quotes').checked
+            enforceSingleQuotes: document.getElementById('enforce-single-quotes').checked,
+            trimTrailingCommas: document.getElementById('trim-trailing-commas').checked
           })
         }
 

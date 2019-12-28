@@ -103,6 +103,11 @@ By default, `jsonlint` will either report a syntax error with details or pretty-
       --prune-comments             omit comments from the prettified output
       --strip-object-keys          strip quotes from object keys if possible
                                    (JSON5)
+      --enforce-double-quotes      surrounds all strings with double quotes
+      --enforce-single-quotes      surrounds all strings with single quotes
+                                   (JSON5)
+      --trim-trailing-commas       omit trailing commas from objects and arrays
+                                   (JSON5)
       -v, --version                output the version number
       -h, --help                   output usage information
 
@@ -204,6 +209,7 @@ The [`print`](#pretty-printing) method accepts an object `options` as the second
 | `stripObjectKeys` | will not print quotes around object keys which are JavaScript identifier names |
 | `enforceDoubleQuotes`       | will surround all strings with double quotes            |
 | `enforceSingleQuotes`       | will surround all strings with single quotes            |
+| `trimTrailingCommas`        | will omit all trailing commas after the last object entry or array item |
 
 ```js
 // Just concatenate the tokens to produce the same output as was the input.
@@ -223,7 +229,11 @@ print(tokens, { indent: '  ', pruneComments: true })
 // Print to multiple lines with indentation enabled and JSON5 object keys.
 print(tokens, { indent: '\t', stripObjectKeys: true })
 // Print to multiple lines with indentation enabled, unify JSON5 formatting.
-print(tokens, { indent: '    ', enforceDoubleQuotes: true })
+print(tokens, {
+  indent: '    ',
+  enforceDoubleQuotes: true,
+  trimTrailingCommas: true
+})
 ```
 
 ### Tokenizing
