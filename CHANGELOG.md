@@ -2,6 +2,7 @@
 
 ### Features
 
+* Allow trimming trailing commas in arrays and objects (JSON5) ([136ea99](https://github.com/prantlf/jsonlint/commit/136ea995bef7b0f77c2ac54b6ce7dd8572190bf8))
 * Allow unifying quotes around object keys to double or single ones (JSON5) ([6b6da17](https://github.com/prantlf/jsonlint/commit/6b6da175cfea8f71841e145a525ef124c19c2607))
 
 # [10.1.1](https://github.com/prantlf/jsonlint/compare/v10.1.0...v10.1.1) (2019-12-27)
