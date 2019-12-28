@@ -7,14 +7,14 @@
 [![devDependency Status](https://david-dm.org/prantlf/jsonlint/dev-status.svg)](https://david-dm.org/prantlf/jsonlint#info=devDependencies)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-A [JSON]/[JSON5] parser and validator with a command-line client. A [pure JavaScript version] of the service provided at [jsonlint.com].
+A [JSON]/CJSON/[JSON5] parser, validator and pretty-printer with a command-line client. A [pure JavaScript version] of the service provided at [jsonlint.com].
 
 This is a fork of the original package with the following enhancements:
 
 * Handles multiple files on the command line (by Greg Inman).
 * Walks directories recursively (by Paul Vollmer).
 * Provides 100% compatible interface to the native `JSON.parse` method.
-* Optionally recognizes JavaScript-style comments and single quoted strings.
+* Optionally recognizes JavaScript-style comments (CJSON) and single quoted strings (JSON5).
 * Optionally ignores trailing commas and reports duplicate object keys as an error.
 * Supports [JSON Schema] drafts 04, 06 and 07.
 * Offers pretty-printing including comment-stripping and object keys without quotes (JSON5).
@@ -30,6 +30,7 @@ Integration to the favourite task loaders for JSON file validation is provided b
 
 * [`Grunt`] - see [`@prantlf/grunt-jsonlint`]
 * [`Gulp`] - see [`@prantlf/gulp-jsonlint`]
+* [`Rollup`] - see [`rollup-plugin-jsonlint`]
 
 ## Synopsis
 
@@ -189,7 +190,7 @@ const validate = compile('string with JSON schema', {
 
 ### Pretty-Printing
 
-You can parse a JSON string to an array of tokens and print it back to a string with some changes applied. It can be unification of whitespace or tripping comments, for example. (Raw token values must be enabled when tokenizing the JSON input.)
+You can parse a JSON string to an array of tokens and print it back to a string with some changes applied. It can be unification of whitespace, reformatting or stripping comments, for example. (Raw token values must be enabled when tokenizing the JSON input.)
 
 ```js
 const { tokenize } = require('@prantlf/jsonlint')
@@ -330,8 +331,10 @@ Licensed under the [MIT License].
 [UMD]: https://github.com/umdjs/umd
 [`Grunt`]: https://gruntjs.com/
 [`Gulp`]: http://gulpjs.com/
+[`Rollup`]: https://rollupjs.org/
 [`@prantlf/grunt-jsonlint`]: https://www.npmjs.com/package/@prantlf/grunt-jsonlint
 [`@prantlf/gulp-jsonlint`]: https://www.npmjs.com/package/@prantlf/gulp-jsonlint
+[`rollup-plugin-jsonlint`]: https://www.npmjs.com/package/rollup-plugin-jsonlint
 [7x faster than the custom parser]: ./benchmarks/results/performance.md#results
 [parser benchmark]: ./benchmarks#json-parser-comparison
 [a lot slower]: ./benchmarks/results/performance.md#results
