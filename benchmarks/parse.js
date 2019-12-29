@@ -17,6 +17,9 @@ const astParse = require('json-to-ast')
 const JSON5 = require('json5')
 const { parse: parseWithComments } = require('comment-json')
 const { parse: parseThis, tokenize: tokenizeThis } = require('..')
+const myna = require('myna-parser')
+require('./myna/pure')(myna)
+const mynaParse = myna.parsers.json
 
 const pkg = require('../package')
 const input = JSON.stringify(pkg, undefined, 2)
@@ -102,6 +105,10 @@ function parseAST () {
   })
 }
 
+function parseMyna () {
+  mynaParse(input)
+}
+
 createSuite(`Parsing JSON data ${input.length} characters long using`)
   .add('the built-in parser', parseBuiltIn)
   .add('the pure chevrotain parser', parsePureChevrotain)
@@ -112,6 +119,7 @@ createSuite(`Parsing JSON data ${input.length} characters long using`)
   .add('the pure hand-built parser', parseHandbuilt)
   .add('the extended hand-built parser', parseExtendedHandbuilt)
   .add('the AST parser', parseAST)
+  .add('the Myna parser', parseMyna)
   .add('the pure jju parser', parsePureJju)
   .add('the extended jju parser', parseExtendedJju)
   .add('the tokenisable jju parser', parseTokenisableJju)

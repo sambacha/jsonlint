@@ -37,6 +37,7 @@ This is a result of the [benchmark] run by `npm run benchmarks`. The numbers sho
       the pure hand-built parser x 7,508 ops/sec ±0.49% (86 runs sampled)
       the extended hand-built parser x 7,517 ops/sec ±0.45% (90 runs sampled)
       the AST parser x 8,008 ops/sec ±0.90% (85 runs sampled)
+      the Myna parser x 3,124 ops/sec ±0.66% (90 runs sampled)
       the pure jju parser x 7,505 ops/sec ±0.64% (89 runs sampled)
       the extended jju parser x 7,352 ops/sec ±0.45% (90 runs sampled)
       the tokenisable jju parser x 6,636 ops/sec ±0.46% (89 runs sampled)
