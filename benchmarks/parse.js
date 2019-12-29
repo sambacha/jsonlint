@@ -15,6 +15,8 @@ const handbuiltParse = require('./hand-built/pure')
 const handbuiltExtendedParse = require('./hand-built/pure')
 const astParse = require('json-to-ast')
 const JSON5 = require('json5')
+const { parse: parseWithComments } = require('comment-json')
+const { parse: parseThis, tokenize: tokenizeThis } = require('..')
 
 const pkg = require('../package')
 const input = JSON.stringify(pkg, undefined, 2)
@@ -58,6 +60,22 @@ function parseTokenisingJju () {
   })
 }
 
+function parseCommentJson () {
+  parseWithComments(input)
+}
+
+function parseCurrentStandard () {
+  parseThis(input)
+}
+
+function parseCurrentExtended () {
+  parseThis(input, { mode: 'json5' })
+}
+
+function parseCurrentTokenising () {
+  tokenizeThis(input, { mode: 'json5' })
+}
+
 function parsePurePegjs () {
   pegjsParse(input)
 }
@@ -88,6 +106,9 @@ createSuite(`Parsing JSON data ${input.length} characters long using`)
   .add('the built-in parser', parseBuiltIn)
   .add('the pure chevrotain parser', parsePureChevrotain)
   .add('the extended chevrotain parser', parseExtendedChevrotain)
+  .add('the standard jsonlint parser', parseCurrentStandard)
+  .add('the extended jsonlint parser', parseCurrentExtended)
+  .add('the tokenising jsonlint parser', parseCurrentTokenising)
   .add('the pure hand-built parser', parseHandbuilt)
   .add('the extended hand-built parser', parseExtendedHandbuilt)
   .add('the AST parser', parseAST)
@@ -95,6 +116,7 @@ createSuite(`Parsing JSON data ${input.length} characters long using`)
   .add('the extended jju parser', parseExtendedJju)
   .add('the tokenisable jju parser', parseTokenisableJju)
   .add('the tokenising jju parser', parseTokenisingJju)
+  .add('the comments-enabled parser', parseCommentJson)
   .add('the pure pegjs parser', parsePurePegjs)
   .add('the extended pegjs parser', parseExtendedPegjs)
   .add('the pure jison parser', parsePureJison)

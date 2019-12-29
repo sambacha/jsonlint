@@ -268,15 +268,13 @@ If you want to retain comments or whitespace for pretty-printing, for example, s
 
 ### Performance
 
-This is a part of an output from the [parser benchmark], when parsing a 4.2 KB formatted string ([package.json](./package.json)) with Node.js 10.15.3:
+This is a part of an output from the [parser benchmark], when parsing a 4.2 KB formatted string ([package.json](./package.json)) with Node.js 12.14.0:
 
-    the built-in parser x 68,212 ops/sec ±0.86% (87 runs sampled)
-    the pure jju parser x 10,234 ops/sec ±1.08% (89 runs sampled)
-    the extended jju parser x 10,210 ops/sec ±1.26% (88 runs sampled)
-    the tokenizable jju parser x 8,832 ops/sec ±0.92% (89 runs sampled)
-    the tokenizing jju parser x 7,911 ops/sec ±1.05% (86 runs sampled)
+    jsonlint using native JSON.parse x 97,109 ops/sec ±0.81% (93 runs sampled)
+    jsonlint using hand-coded parser x 7,256 ops/sec ±0.54% (90 runs sampled)
+    jsonlint using tokenising parser x 6,387 ops/sec ±0.44% (88 runs sampled)
 
-A custom JSON parser is [a lot slower] than the built-in one. However, it is more important to have a [clear error reporting] than the highest speed in scenarios like parsing configuration files. Extending the parser with the support for comments and single-quoted strings does not affect the performance. Making the parser collect tokens and their locations decreases the performance a bit.
+A custom JSON parser is [a lot slower] than the built-in one. However, it is more important to have a [clear error reporting] than the highest speed in scenarios like parsing configuration files. (For better error-reporting, the speed can be preserved by using the native parser initially and re-parsing with another parser only in case of failure.) Features like comments or JSON5 are also helpful in configuration files. Tokens preserve the complete input and can be used for pretty-printing without losing the comments.
 
 ### Error Handling
 

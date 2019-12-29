@@ -6,6 +6,7 @@ const { parse: jjuParse } = require('./jju/pure')
 const { parse: pegjsParse } = require('./pegjs/pure')
 const jisonParser = require('./jison/pure').parser
 const JSON5 = require('json5')
+const { parse: parseWithComments } = require('comment-json')
 
 const inputSources = [
   `{
@@ -184,6 +185,10 @@ function parseJju () {
   }
 }
 
+function parseCommentJson () {
+  parseWithComments(inputSource)
+}
+
 function improvePegjsError (error) {
   const { message, location } = error
   const { line, column, offset } = location.start
@@ -237,6 +242,7 @@ for (const test of inputSources) {
     .add('the chevrotain parser', parseChevrotain)
     .add('the hand-built parser', parseHandbuilt)
     .add('the jju parser', parseJju)
+    .add('the comment-json parser', parseCommentJson)
     .add('the pegjs parser', parsePegjs)
     .add('the jison parser', parseJison)
     .add('the JSON5 parser', parseJSON5)
