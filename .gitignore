@@ -2,6 +2,7 @@
 .nyc_output
 benchmarks/jison/*.js
 benchmarks/pegjs/*.js
+benchmarks/nearley/*.js
 coverage
 node_modules
 lib/jsonlint*.js

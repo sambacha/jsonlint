@@ -20,6 +20,10 @@ const { parse: parseThis, tokenize: tokenizeThis } = require('..')
 const myna = require('myna-parser')
 require('./myna/pure')(myna)
 const mynaParse = myna.parsers.json
+const { Parser: NearleyParser, Grammar: NearleyGrammar } = require('nearley')
+const nearleyJsonGrammar = require('./nearley/pure')
+const nearleyParser = new NearleyParser(NearleyGrammar.fromCompiled(nearleyJsonGrammar));
+const nearleyOrigin = nearleyParser.save()
 
 const pkg = require('../package')
 const input = JSON.stringify(pkg, undefined, 2)
@@ -79,6 +83,11 @@ function parseCurrentTokenising () {
   tokenizeThis(input, { mode: 'json5' })
 }
 
+function parseNearley () {
+  nearleyParser.restore(nearleyOrigin)
+  nearleyParser.feed(input)
+}
+
 function parsePurePegjs () {
   pegjsParse(input)
 }
@@ -130,4 +139,5 @@ createSuite(`Parsing JSON data ${input.length} characters long using`)
   .add('the pure jison parser', parsePureJison)
   .add('the extended jison parser', parseExtendedJison)
   .add('the JSON5 parser', parseJSON5)
+  .add('the Nearley parser', parseNearley)
   .start()

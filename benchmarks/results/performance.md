@@ -48,6 +48,7 @@ This is a result of the [benchmark] run by `npm run benchmarks`. The numbers sho
       the pure jison parser x 2,460 ops/sec ±0.49% (89 runs sampled)
       the extended jison parser x 2,195 ops/sec ±0.63% (88 runs sampled)
       the JSON5 parser x 1,660 ops/sec ±0.84% (90 runs sampled)
+      the Nearley parser x 1,408 ops/sec ±1.14% (85 runs sampled)
     The fastest one was the built-in parser,the standard jsonlint parser.
 
 I looked further at capabilities and licenses of the parsers.
