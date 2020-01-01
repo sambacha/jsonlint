@@ -207,7 +207,7 @@ The [`print`](#pretty-printing) method accepts an object `options` as the second
 | --------------------------- | ------------------------------------------------------- |
 | `indent`                    | count of spaces or the specific characters to be used as an indentation unit |
 | `pruneComments`             | will omit all tokens with comments                      |
-| `stripObjectKeys` | will not print quotes around object keys which are JavaScript identifier names |
+| `stripObjectKeys`           | will not print quotes around object keys which are JavaScript identifier names |
 | `enforceDoubleQuotes`       | will surround all strings with double quotes            |
 | `enforceSingleQuotes`       | will surround all strings with single quotes            |
 | `trimTrailingCommas`        | will omit all trailing commas after the last object entry or array item |
@@ -243,7 +243,10 @@ The method `tokenize` has the same prototype as the method [`parse`](#module-int
 
 ```js
 const { tokenize } = require('@prantlf/jsonlint')
-const tokens = tokenize('{"flag":true /* default */}', { ignoreComments: true }))
+const tokens = tokenize('{"flag":true /* default */}', {
+  ignoreComments: true,
+  rawTokens: true
+}))
 // Returns the following array:
 // [
 //   { type: 'symbol',     raw: '{',      value: '{' },
