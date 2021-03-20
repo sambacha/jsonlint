@@ -1,6 +1,6 @@
 # Error Reporting Quality of JSON Parsers
 
-I looked at some parsers, which were [tested with a JSON grammar]. A part of the analysis was [performance], but because JSONLint is a tool to validate the input, the error reporting is very important too. 
+I looked at some parsers, which were [tested with a JSON grammar]. A part of the analysis was [performance], but because JSONLint is a tool to validate the input, the error reporting is very important too.
 
 I extended the existing error-reporting to always include the following information, as far as it was possible:
 
@@ -52,7 +52,7 @@ The output was:
 
     the jison parser:
       Parse error on line 1, column 3:
-      {  # Sets a value to a 
+      {  # Sets a value to a
       ---^
       Expecting 'STRING', '}', got 'INVALID'
 
@@ -369,13 +369,13 @@ The output was:
 
     the built-in parser:
       Parse error on line 1, column 2:
-     
+
       -^
       Unexpected end of JSON input
 
     the chevrotain parser:
       Parse error on line 1, column 2:
-     
+
       -^
       Expecting: one of these possible Token sequences:
         1. [LCurly]
@@ -387,25 +387,25 @@ The output was:
 
     the jju parser:
       Parse error on line 1, column 2:
-     
+
       -^
       No data, only a whitespace
 
     the pegjs parser:
       Parse error on line 1, column 2:
-     
+
       -^
       Expected "[", "false", "null", "true", "{", number, or string but end of input found.
 
     the jison parser:
       Parse error on line 1, column 2:
-     
+
       -^
       Expecting 'STRING', 'NUMBER', 'NULL', 'TRUE', 'FALSE', '{', '[', got 'EOF'
 
     the JSON5 parser:
       Parse error on line 1, column 2:
-     
+
       -^
       Invalid end of input
 
@@ -417,13 +417,13 @@ The output was:
 
     the built-in parser:
       Parse error on line 1, column 1:
-    
+
       ^
       Unexpected end of JSON input
 
     the chevrotain parser:
       Parse error on line 1, column 1:
-    
+
       ^
       Expecting: one of these possible Token sequences:
         1. [LCurly]
@@ -435,25 +435,25 @@ The output was:
 
     the jju parser:
       Parse error on line 1, column 1:
-    
+
       ^
       No data, empty input
 
     the pegjs parser:
       Parse error on line 1, column 1:
-    
+
       ^
       Expected "[", "false", "null", "true", "{", number, or string but end of input found.
 
     the jison parser:
       Parse error on line 1, column 1:
-    
+
       ^
       Expecting 'STRING', 'NUMBER', 'NULL', 'TRUE', 'FALSE', '{', '[', got 'EOF'
 
     the JSON5 parser:
       Parse error on line 1, column 1:
-    
+
       ^
       Invalid end of input
 

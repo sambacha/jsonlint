@@ -50,7 +50,7 @@
     "jsonlint"
   ],
   "dependencies": {
-    "ajv": "6.10.2",
+    "ajv": "6.12.6",
     "commander": "4.0.1"
   },
   "devDependencies": {
